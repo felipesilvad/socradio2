@@ -5,19 +5,20 @@ import {auth} from './firebase';
 import ChatRoom from './Components/ChatRoom';
 import SignIn from './Components/SignIn';
 import SignOut from './Components/SignOut';
-import { Container,Row,Col } from 'react-bootstrap';
+import {Row,Col} from 'react-bootstrap';
+import AudioPlayerComponent from './Components/AudioPlayerComponent';
 
 function App() {
 
   const [user] = useAuthState(auth);
 
   return (
-    <Container className="App">
+    <div className="App">
       <Row>
-        <Col md={8}>
-          Music Player
+        <Col md={9}>
+          <AudioPlayerComponent />
         </Col>
-        <Col md={4}>
+        <Col md={3}>
           <header>
             {user ? <SignOut /> : <SignIn />}
           </header>
@@ -27,7 +28,7 @@ function App() {
           </section>
         </Col>
       </Row>
-    </Container>
+    </div>
   );
 }
 

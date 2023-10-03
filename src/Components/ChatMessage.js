@@ -11,7 +11,7 @@ function ChatMessage(props) {
   
   return (<>
     <div className={`message ${user ?(uid === auth.currentUser.uid ? 'sent' : 'received') : 'received'}`}>
-      <img src={photoURL || 'https://api.adorable.io/avatars/23/abott@adorable.png'} />
+      <img className='profile-img' src={photoURL || 'https://api.adorable.io/avatars/23/abott@adorable.png'} />
       <p>{text}</p>
     </div>
   </>)
