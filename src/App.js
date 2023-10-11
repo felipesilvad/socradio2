@@ -3,10 +3,10 @@ import { useAuthState } from 'react-firebase-hooks/auth';
 import './styles/App.scss';
 import {auth} from './firebase';
 import ChatRoom from './Components/ChatRoom';
-import SignIn from './Components/SignIn';
-import SignOut from './Components/SignOut';
+import SignIn from './Components/Accounts/SignIn';
+import SignOut from './Components/Accounts/SignOut';
 import {Row,Col} from 'react-bootstrap';
-import AudioPlayerComponent from './Components/AudioPlayerComponent';
+import AudioPlayerComponent from './Components/AudioPlayer/AudioPlayerComponent';
 
 function App() {
 
@@ -14,20 +14,17 @@ function App() {
 
   return (
     <div className="App">
-      <Row>
-        <Col md={9}>
-          <AudioPlayerComponent />
-        </Col>
-        <Col md={3}>
+      <AudioPlayerComponent />
+      <ChatRoom />
+        {/* <Col md={3}>
           <header>
             {user ? <SignOut /> : <SignIn />}
           </header>
 
           <section>
-            <ChatRoom />
+            
           </section>
-        </Col>
-      </Row>
+        </Col> */}
     </div>
   );
 }

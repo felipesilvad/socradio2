@@ -30,17 +30,21 @@ function ChatRoom() {
     dummy.current.scrollIntoView({ behavior: 'smooth' });
   }
 
-  return (<>
-    <main>
-      {messages && messages.map(msg => <ChatMessage key={msg.id} message={msg} />)}
-      <span ref={dummy}></span>
-    </main>
+  return (
+    <div>
+      <div className='chat-messages-div'>
+        <div>
+          {messages && messages.map(msg => <ChatMessage key={msg.id} message={msg} />)}
+          <span ref={dummy}></span>
+        </div>
+      </div>
 
-    <form onSubmit={sendMessage}>
-      <input value={formValue} onChange={(e) => setFormValue(e.target.value)} placeholder="say something nice" />
-      <button type="submit" disabled={!formValue}>🕊️</button>
-    </form>
-  </>)
+      <form onSubmit={sendMessage} className='send-message'>
+        <input value={formValue} onChange={(e) => setFormValue(e.target.value)} placeholder="say something nice" />
+        <button type="submit" disabled={!formValue}>send</button>
+      </form>
+    </div>
+  )
 }
 
 export default ChatRoom;
