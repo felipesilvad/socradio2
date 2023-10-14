@@ -16,15 +16,9 @@ function App() {
     <div className="App">
       <AudioPlayerComponent />
       <ChatRoom />
-        {/* <Col md={3}>
-          <header>
-            {user ? <SignOut /> : <SignIn />}
-          </header>
-
-          <section>
-            
-          </section>
-        </Col> */}
+      <div className='header'>
+        {user ? <SignOut /> : <SignIn />}
+      </div>
     </div>
   );
 }

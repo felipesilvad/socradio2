@@ -26,7 +26,7 @@ function AudioPlayerComponent() {
 
   const NextSong = () => {
     setCurrentSongIndex(currentSongIndex+1)
-    PlayAudio()
+    // PlayAudio()
   }
   
   if (songList) {

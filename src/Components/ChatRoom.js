@@ -3,6 +3,8 @@ import { auth, firestore} from '../firebase';
 import ChatMessage from './ChatMessage';
 import { useCollectionData } from 'react-firebase-hooks/firestore';
 import firebase from 'firebase/compat/app';
+import {Button,Form} from 'react-bootstrap';
+import { BsSendFill } from 'react-icons/bs';
 
 function ChatRoom() {
   const dummy = useRef();
@@ -39,10 +41,12 @@ function ChatRoom() {
         </div>
       </div>
 
-      <form onSubmit={sendMessage} className='send-message'>
-        <input value={formValue} onChange={(e) => setFormValue(e.target.value)} placeholder="say something nice" />
-        <button type="submit" disabled={!formValue}>send</button>
-      </form>
+      <Form onSubmit={sendMessage} className='send-message'>
+        <Form.Control value={formValue} onChange={(e) => setFormValue(e.target.value)} placeholder="Send a message" />
+        <Button type="submit" className='send-btn' disabled={!formValue}>
+          <BsSendFill className='mb-1' />
+        </Button>
+      </Form>
     </div>
   )
 }

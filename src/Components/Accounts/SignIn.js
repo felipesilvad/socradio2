@@ -15,12 +15,15 @@ function SignIn() {
     });
   }, [])
 
+  const [signUp, setSignUp] = useState(false)
+
   // SignInForm
   const [email, setEmail] = useState()
   const [username, setUsername] = useState()
   const [password, setPassword] = useState()
   const [error, setError] = useState()
 
+  
   // Modal
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
@@ -41,28 +44,30 @@ function SignIn() {
       }
     })
   }
-
   const SignUp = () => {
     try{
-      createUserWithEmailAndPassword(auth, email, password)
-      .then((result) => {
-        if (!users.includes(result.user.email)) {
-          usersRef.doc(result.user.uid).set({
-            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-            uid: result.user.uid,
-            email: result.user.email,
-            username: username,
+      if (!users.includes(email)) {
+        if (username) {
+          createUserWithEmailAndPassword(auth, email, password)
+          .then((result) => {
+            usersRef.doc(result.user.uid).set({
+              createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+              uid: result.user.uid,
+              email: result.user.email,
+              username: username,
+            })
+          }).catch((error) => {
+            const errorCode = error.code;
+            const errorMessage = error.message;
+            console.log(errorCode,errorMessage)
           })
         } else {
-          setError('Email already used')
+          setError('Username is required')
         }
-      })
-      .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        console.log(errorCode,errorMessage)
-      })
-    }catch (e) {
+      } else {
+        setError('Email already used')
+      }
+    } catch (e) {
       setError(e.message)
       console.log(e.message)
     }
@@ -72,30 +77,56 @@ function SignIn() {
     <div>
       <button className="sign-in" onClick={handleShow}>Sign in</button>
 
-      <Modal dark show={show} onHide={handleClose}>
+      <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
-          <Modal.Title>Sign In</Modal.Title>
+          <Modal.Title>{signUp?('Sign Up'):('Sign In')}</Modal.Title>
         </Modal.Header>
-        <Modal.Body>
           {error && <Alert variant="danger">{error}</Alert>}
-          <Form.Group id="email">
-            <Form.Label>Email</Form.Label>
-            <Form.Control onChange={(e) => setEmail(e.target.value)} type="email" required />
-          </Form.Group>
-          <Form.Group id="username">
-            <Form.Label>Username</Form.Label>
-            <Form.Control onChange={(e) => setUsername(e.target.value)} type="username" required />
-          </Form.Group>
-          <Form.Group id="password">
-            <Form.Label>Password</Form.Label>
-            <Form.Control onChange={(e) => setPassword(e.target.value)} type="password"  required />
-          </Form.Group>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={() => SignUp()}>
-            Sign UP
-          </Button>
-        </Modal.Footer>
+          {signUp?(<>
+            <Modal.Body>
+              <Form.Group id="email">
+                <Form.Label>Email</Form.Label>
+                <Form.Control onChange={(e) => setEmail(e.target.value)} type="email" required />
+              </Form.Group>
+              <Form.Group id="username">
+                <Form.Label>Username</Form.Label>
+                <Form.Control onChange={(e) => setUsername(e.target.value)} type="username" required />
+              </Form.Group>
+              <Form.Group id="password">
+                <Form.Label>Password</Form.Label>
+                <Form.Control onChange={(e) => setPassword(e.target.value)} type="password"  required />
+              </Form.Group>
+            </Modal.Body>
+            <Modal.Footer>
+              <h6 className='sign-txt' onClick={() => setSignUp(false)}>
+                Already have an account? Sign In
+              </h6>
+              <Button variant="secondary" onClick={() => SignUp()}>
+                Sign Up
+              </Button>
+            </Modal.Footer>
+          </>):(<>
+            <Modal.Body>
+              <Form.Group id="email">
+                <Form.Label>Email</Form.Label>
+                <Form.Control onChange={(e) => setEmail(e.target.value)} type="email" required />
+              </Form.Group>
+
+              <Form.Group id="password">
+                <Form.Label>Password</Form.Label>
+                <Form.Control onChange={(e) => setPassword(e.target.value)} type="password"  required />
+              </Form.Group>
+            </Modal.Body>
+            <Modal.Footer>
+              <h6 className='sign-txt' onClick={() => setSignUp(true)}>
+                Don't have an account? Sign Up
+              </h6>
+              <Button variant="secondary" onClick={() => SignUp()}>
+                Sign In
+              </Button>
+            </Modal.Footer>
+          </>)}
+          
       </Modal>
     </div>
   )
