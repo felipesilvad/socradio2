@@ -16,7 +16,7 @@ function ChatMessage(props) {
   }, []);
   
   return (<>
-    <p className='messages-username'>{userData.username&&(userData.username)}</p>
+    <p className='messages-username'>{userData&&(userData.username&&(userData.username))}</p>
     <div className={`message ${user ?(uid === auth.currentUser.uid ? 'sent' : 'received') : 'received'}`}>
       {/* <img className='profile-img' src={photoURL || 'https://api.adorable.io/avatars/23/abott@adorable.png'} /> */}
       <p>{text}</p>
