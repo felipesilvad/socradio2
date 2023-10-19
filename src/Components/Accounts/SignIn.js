@@ -75,7 +75,7 @@ function SignIn() {
   
   return (
     <div>
-      <button className="sign-in" onClick={handleShow}>Sign in</button>
+      <Button className="sign-in" onClick={handleShow}>Sign in</Button>
 
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
