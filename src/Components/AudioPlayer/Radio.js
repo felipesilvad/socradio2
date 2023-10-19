@@ -18,7 +18,10 @@ import React, {useRef, useEffect} from 'react';
   }, [audioRef.current])
 
   return (
-    <audio ref={audioRef} />
+    <div className='audio-test'>
+      Where is it
+      <audio className='audio-test' ref={audioRef} />
+    </div>
   )
 }
 
