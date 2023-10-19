@@ -4,7 +4,7 @@ import 'react-h5-audio-player/lib/styles.css';
 import { useCollectionData } from 'react-firebase-hooks/firestore';
 import {firestore} from '../../firebase';
 import {Image} from 'react-bootstrap';
-
+import Radio from './Radio';
 function AudioPlayerComponent() {
   const player = useRef()
 
@@ -28,11 +28,13 @@ function AudioPlayerComponent() {
     setCurrentSongIndex(currentSongIndex+1)
     // PlayAudio()
   }
+
   
   if (songList) {
     const currentSong = songList[currentSongIndex]
     return (
       <>
+        <Radio audio={currentSong.audio} />
         <div className="audio-player-display" style={{
           backgroundImage: `url(${currentSong.cover})`
         }}>
@@ -45,7 +47,7 @@ function AudioPlayerComponent() {
               <h2>{currentSong.artist}</h2>
               <h4>{currentSong.album}</h4>
             </div>
-            <AudioPlayer
+            {/* <AudioPlayer
               autoPlay={true}
               src={currentSong.audio}
               onPlay={e => console.log("onPlay")}
@@ -57,7 +59,7 @@ function AudioPlayerComponent() {
               autoPlayAfterSrcChange={true}
               customControlsSection={[RHAP_UI.VOLUME_CONTROLS]}
               layout={'horizontal'}
-            />
+            /> */}
           </div>
         </div>
       </>
