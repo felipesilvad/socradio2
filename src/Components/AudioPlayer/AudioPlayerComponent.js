@@ -5,14 +5,22 @@ import { useCollectionData } from 'react-firebase-hooks/firestore';
 import {firestore} from '../../firebase';
 import {Image} from 'react-bootstrap';
 import Radio from './Radio';
+import { doc, getDoc, onSnapshot } from "firebase/firestore";
 
 function AudioPlayerComponent() {
   const player = useRef()
 
   const songsRef = firestore.collection('songs');
-  const query = songsRef.limit(5);
-  const [songList] = useCollectionData(query, { idField: 'id' });
-  const [currentSongIndex, setCurrentSongIndex] = useState(0);
+  // const query = songsRef.limit(5);
+  // const [songList] = useCollectionData(query, { idField: 'id' });
+  // const [currentSongIndex, setCurrentSongIndex] = useState(0);
+  const [currentSong, setCurrentSong] = useState();
+
+  const setCurrentSongFromDB = (songID) => {
+    onSnapshot(doc(firestore, "/songs/", songID), (doc) => {
+      setCurrentSong(doc.data());
+    });
+  }
 
   const PlayAudio = () => {
     if (player.current.audio.current) {
@@ -26,26 +34,23 @@ function AudioPlayerComponent() {
   };
 
   const NextSong = () => {
-    setCurrentSongIndex(currentSongIndex+1)
+    // setCurrentSongIndex(currentSongIndex+1)
     // PlayAudio()
   }
 
-  const fetchCurrentSong = async () => {
-    const response = await fetch("https://swapi.dev/api/people/1")
+  const fetchCurrentSongFromAPI = async () => {
+    const response = await fetch("http://127.0.0.1:5000/getCurrentSong")
     const data = await response.json();
-    console.log(data)
-    // fetch("http://127.0.0.1:5000/")
-    //   .then(response => {
-    //     console.log(response.json())
-    //   })
+    setCurrentSongFromDB(data.id)
   }
 
   useEffect(() => {
-    fetchCurrentSong()
+    fetchCurrentSongFromAPI()
   }, [])
+
+  console.log(currentSong)
   
-  if (songList) {
-    const currentSong = songList[currentSongIndex]
+  if (currentSong) {
     return (
       <>
         {/* <Radio audio={currentSong.audio} /> */}
@@ -61,7 +66,7 @@ function AudioPlayerComponent() {
               <h2>{currentSong.artist}</h2>
               <h4>{currentSong.album}</h4>
             </div>
-            {/* <AudioPlayer
+            <AudioPlayer
               autoPlay={true}
               src={currentSong.audio}
               onPlay={e => console.log("onPlay")}
@@ -73,7 +78,7 @@ function AudioPlayerComponent() {
               autoPlayAfterSrcChange={true}
               customControlsSection={[RHAP_UI.VOLUME_CONTROLS]}
               layout={'horizontal'}
-            /> */}
+            />
           </div>
         </div>
       </>

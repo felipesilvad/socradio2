@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import {auth, firestore} from '../../firebase';
 import { useAuthState } from 'react-firebase-hooks/auth';
-import { doc, getDoc, onSnapshot } from "firebase/firestore";
+import { doc, onSnapshot } from "firebase/firestore";
 
 
 function ChatMessage(props) {
