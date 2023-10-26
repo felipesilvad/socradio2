@@ -4,7 +4,6 @@ import 'react-h5-audio-player/lib/styles.css';
 import { useCollectionData } from 'react-firebase-hooks/firestore';
 import {firestore} from '../../firebase';
 import {Image} from 'react-bootstrap';
-import Radio from './Radio';
 import { doc, getDoc, onSnapshot } from "firebase/firestore";
 
 function AudioPlayerComponent() {
@@ -31,47 +30,51 @@ function AudioPlayerComponent() {
   const toTime = (time) => {
     const audio = player.current.audio.current
     audio.currentTime = time;
+    console.log('moved to time')
   };
 
-  const NextSong = () => {
-    // setCurrentSongIndex(currentSongIndex+1)
-    // PlayAudio()
+  const setCurrentSongFromAPI = async () => {
+    const response = await fetch("http://127.0.0.1:5000/currentSong")
+    const song = await response.json();
+    setCurrentSong(song)
   }
 
-  const fetchCurrentSongFromAPI = async () => {
-    const response = await fetch("http://127.0.0.1:5000/getCurrentSong")
-    const data = await response.json();
-    setCurrentSongFromDB(data.id)
+  const LoadSong =  async () => {
+    setCurrentSongFromAPI()
+    const now = new Date().getTime()
+    const seconds = now / 1000
+    const songStart = await currentSong.startTime
+    toTime(seconds-songStart)
   }
 
   useEffect(() => {
-    fetchCurrentSongFromAPI()
+    LoadSong()
   }, [])
 
   console.log(currentSong)
   
-  if (currentSong) {
+  if (currentSong&&currentSong.data) {
     return (
       <>
         {/* <Radio audio={currentSong.audio} /> */}
         <div className="audio-player-display" style={{
-          backgroundImage: `url(${currentSong.cover})`
+          backgroundImage: `url(${currentSong.data.cover})`
         }}>
         </div>
         <div className='bg-overlay'>
-          <Image className="cover-img" src={currentSong.cover} />
+          <Image className="cover-img" src={currentSong.data.cover} />
           <div className='song-txt'>
             <div className='ml-2 mt-2' >
-              <h1>{currentSong.title}</h1>
-              <h2>{currentSong.artist}</h2>
-              <h4>{currentSong.album}</h4>
+              <h1>{currentSong.data.title}</h1>
+              <h2>{currentSong.data.artist}</h2>
+              <h4>{currentSong.data.album}</h4>
             </div>
             <AudioPlayer
               autoPlay={true}
-              src={currentSong.audio}
+              src={currentSong.data.audio}
               onPlay={e => console.log("onPlay")}
               ref={player}
-              onEnded={() => NextSong()}
+              onEnded={() => LoadSong()}
               showDownloadProgress={false}
               showJumpControls={false}
               hasDefaultKeyBindings={false}
