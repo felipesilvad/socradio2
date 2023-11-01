@@ -5,23 +5,24 @@ import { useCollectionData } from 'react-firebase-hooks/firestore';
 import {firestore} from '../../firebase';
 import {Image} from 'react-bootstrap';
 import { doc, getDoc, onSnapshot } from "firebase/firestore";
+import AudioPlayerRatings from './AudioPlayerRatings';
 
-function AudioPlayerComponent({station}) {
+function AudioPlayerComponent({station, user}) {
   const player = useRef()
 
   const songsRef = firestore.collection('songs');
   // const query = songsRef.limit(5);
   // const [songList] = useCollectionData(query, { idField: 'id' });
   // const [currentSongIndex, setCurrentSongIndex] = useState(0);
-  const [currentSong, setCurrentSong] = useState();
   const [currentSongIndex, setCurrentSongIndex] = useState();
+  const [currentSongStartTime, setCurrentSongStartTime] = useState();
   const [playlist, setPlaylist] = useState();
 
-  const setCurrentSongFromDB = (songID) => {
-    onSnapshot(doc(firestore, "/songs/", songID), (doc) => {
-      setCurrentSong(doc.data());
-    });
-  }
+  // const setCurrentSongFromDB = (songID) => {
+  //   onSnapshot(doc(firestore, "/songs/", songID), (doc) => {
+  //     setCurrentSong(doc.data());
+  //   });
+  // }
 
   const PlayAudio = () => {
     if (player.current.audio.current) {
@@ -30,19 +31,32 @@ function AudioPlayerComponent({station}) {
   }
 
   const toTime = (time) => {
-    const audio = player.current.audio.current
-    audio.currentTime = time;
-    console.log('moved to time')
+    if (player.current) {
+      const audio = player.current.audio.current
+      audio.currentTime = time;
+      console.log('moved to time', time)
+    }
   };
 
   const setCurrentSongFromAPI = async () => {
     const response = await fetch(`http://127.0.0.1:5000/currentSong${station}`)
     const song = await response.json();
-    setCurrentSong(song)
     setCurrentSongIndex(song.index)
-    console.log(song)
+    setCurrentSongStartTime(song.startTime)
+
+    const now = new Date().getTime()
+    const seconds = now / 1000
+    toTime(seconds-song.startTime)
   }
 
+  const onEndedSong = () => {
+    if (currentSongIndex+1===playlist.length) {
+      setCurrentSongIndex(0)
+    } else {
+      setCurrentSongIndex(i => i + 1)
+    }
+    // setCurrentSongFromAPI()
+  }
 
   const setPlaylistSongFromAPI = async () => {
     const response = await fetch(`http://127.0.0.1:5000/playlist${station}`)
@@ -50,48 +64,38 @@ function AudioPlayerComponent({station}) {
     setPlaylist(playlist)
   }
 
-  const onEndedSong = () => {
-    setCurrentSong(playlist[currentSongIndex+1])
-    setCurrentSongIndex(currentSongIndex+1)
-  }
-
   useEffect(() => {
-    setCurrentSongFromAPI()
     setPlaylistSongFromAPI()
   }, [])
 
   useEffect(() => {
-    if (currentSong) {
-      const now = new Date().getTime()
-      const seconds = now / 1000
-      const songStart =  currentSong.startTime
-      toTime(seconds-songStart)
-    }
-  }, [currentSong])
+    setCurrentSongFromAPI()
+  }, [playlist])
 
-  // console.log(playlist)
-  // console.log([currentSongIndex])
+
+  // console.log("playlist:",playlist)
+  // console.log("currentSongIndex",currentSongIndex)
   
-  if (currentSong&&currentSong.data) {
+  if (Number.isInteger(currentSongIndex)) {
     return (
       <>
         {/* <Radio audio={currentSong.audio} /> */}
         <div className="audio-player-display" style={{
-          backgroundImage: `url(${currentSong.data.cover})`
+          backgroundImage: `url(${playlist[currentSongIndex].data.cover})`
         }}>
         </div>
         <div className='bg-overlay'>
-          <Image className="cover-img" src={currentSong.data.cover} />
+          <Image className="cover-img" src={playlist[currentSongIndex].data.cover} />
           <div className='song-txt'>
             <div className='ml-2 mt-2' >
-              <h1>{currentSong.data.title}</h1>
-              <h2>{currentSong.data.artist}</h2>
-              <h4>{currentSong.data.album}</h4>
+              <h1>{playlist[currentSongIndex].data.title}</h1>
+              <h2>{playlist[currentSongIndex].data.artist}</h2>
+              <h4>{playlist[currentSongIndex].data.album}</h4>
             </div>
             <AudioPlayer
               autoPlay={true}
-              src={currentSong.data.audio}
-              onPlay={e => console.log("onPlay")}
+              src={playlist[currentSongIndex].data.audio}
+              // onPlay={e => console.log("onPlay")}
               ref={player}
               onEnded={() => onEndedSong()}
               showDownloadProgress={false}
@@ -101,6 +105,9 @@ function AudioPlayerComponent({station}) {
               customControlsSection={[RHAP_UI.VOLUME_CONTROLS]}
               layout={'horizontal'}
             />
+
+            <AudioPlayerRatings songID={playlist[currentSongIndex].id} user={user} />
+
           </div>
         </div>
       </>

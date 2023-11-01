@@ -5,9 +5,8 @@ import { useCollectionData } from 'react-firebase-hooks/firestore';
 import firebase from 'firebase/compat/app';
 import {Button,Form} from 'react-bootstrap';
 import { BsSendFill } from 'react-icons/bs';
-import { useAuthState } from 'react-firebase-hooks/auth';
 
-function ChatRoom() {
+function ChatRoom({user}) {
   const dummy = useRef();
   const messagesRef = firestore.collection('messages');
   const query = messagesRef.orderBy('createdAt').limit(25);
@@ -15,7 +14,6 @@ function ChatRoom() {
   const [messages] = useCollectionData(query, { idField: 'id' });
 
   const [formValue, setFormValue] = useState('');
-  const [user] = useAuthState(auth);
 
 
   const sendMessage = async (e) => {
@@ -50,7 +48,7 @@ function ChatRoom() {
         </Button>
       </Form>
       )
-       : <div>
+       : <div className='sign-to-message'>
         You need to Sign In to send messages
       </div>}
     </div>

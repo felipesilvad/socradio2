@@ -4,9 +4,8 @@ import SignOut from './Accounts/SignOut';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import {auth} from '../firebase';
 
-function Header(){
+function Header({user}){
 
-  const [user] = useAuthState(auth);
   return (
     <div className='header'>
       {user ? <SignOut /> : <SignIn />}

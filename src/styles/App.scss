@@ -286,6 +286,23 @@ input {
   }
 }
 
+.sign-to-message{
+  z-index: 4;
+  height: 5%;
+  bottom: 0;
+  width: 100%;
+  position: absolute;
+  display: flex;
+  background-color: rgb(24, 23, 23);
+  color: white;
+  font-size: 1rem;
+  text-align: center;
+  @media only screen and (min-width: $lg) {
+    left: 80%;
+    width: 20%;
+  }
+}
+
 .sign-txt {
   font-size: 1rem;
   color: #0b93f6;
