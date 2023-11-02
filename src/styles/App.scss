@@ -15,7 +15,7 @@ body {
 
 .header {
   background-color: #181717;
-  height: 8%;
+  height: 6%;
   min-height: 50px;
   color: white;
   position: fixed;
@@ -29,8 +29,8 @@ body {
   box-sizing: border-box;
   @media only screen and (min-width: $lg) {
     top: 0%;
-    left: 80%;
-    width: 20%;
+    left: 0%;
+    width: 100%;
   }
 }
 
@@ -53,10 +53,11 @@ main {
   height: 45%;
   overflow: scroll;
   @media only screen and (min-width: $lg) {
-    top: 10%;
+    top: 6%;
     left: 80%;
     width: 20%;
     height: 90%;
+    padding-top: 0.75rem
   }
 }
 
@@ -165,11 +166,11 @@ ul, li {
 
 .cover-img {
   position: absolute;
-  top: 0.5%;
+  top: 2%;
   left: 50%;
   transform: translate(-50%, 0);
   z-index: 2;
-  height: 50%;
+  height: 43.5%;
   max-width: 95%;
   @media only screen and (min-width: $lg) {
     top: 20%;
