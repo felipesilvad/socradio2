@@ -1,11 +1,10 @@
 import React from 'react';
 import './styles/App.scss';
-import ChatRoom from './Components/Chat/ChatRoom';
 import Header from './Components/Header';
-import {Row,Col} from 'react-bootstrap';
-import AudioPlayerComponent from './Components/AudioPlayer/AudioPlayerComponent';
 import {auth} from './firebase';
 import { useAuthState } from 'react-firebase-hooks/auth';
+import StationComponent from './Components/Station';
+import {Routes, Route} from 'react-router-dom'
 
 function App() {
 
@@ -13,9 +12,12 @@ function App() {
 
   return (
     <div className="App">
-      <AudioPlayerComponent station={"Main"} user={user} />
-      <ChatRoom user={user} />
       <Header user={user} />
+      <Routes>
+        <Route path='/' element={<StationComponent user={user} station={"Main"} />} exact/>
+        <Route path='/Chill' element={<StationComponent user={user} station={"Chill"} />} exact/>
+      </Routes>
+      
     </div>
   );
 }

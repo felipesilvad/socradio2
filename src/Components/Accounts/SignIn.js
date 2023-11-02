@@ -3,7 +3,7 @@ import {auth,firestore} from '../../firebase';
 import firebase from 'firebase/compat/app';
 import {query,collection,onSnapshot} from "firebase/firestore";
 import { Modal,Button,Form,Alert} from 'react-bootstrap';
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword,signInWithEmailAndPassword } from "firebase/auth";
 
 function SignIn() {
 
@@ -23,13 +23,28 @@ function SignIn() {
   const [password, setPassword] = useState()
   const [error, setError] = useState()
 
-  
   // Modal
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
   const usersRef = firestore.collection('users');
+
+  const signIn = (email,password) => {
+    return signInWithEmailAndPassword(auth,email,password)
+  };
+
+  const loginWithEmailHandler = (email, password) => {
+    signInWithEmailAndPassword(auth, email, password)
+      .then((result) => {
+        const user = result.user;
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        console.log(errorCode, errorMessage);
+      });
+  }
 
   const signInWithGoogle = () => {
     const provider = new firebase.auth.GoogleAuthProvider();
@@ -44,6 +59,7 @@ function SignIn() {
       }
     })
   }
+
   const SignUp = () => {
     try{
       if (!users.includes(email)) {
@@ -121,7 +137,7 @@ function SignIn() {
               <h6 className='sign-txt' onClick={() => setSignUp(true)}>
                 Don't have an account? Sign Up
               </h6>
-              <Button variant="secondary" onClick={() => SignUp()}>
+              <Button variant="secondary" onClick={() => loginWithEmailHandler(email,password)}>
                 Sign In
               </Button>
             </Modal.Footer>
