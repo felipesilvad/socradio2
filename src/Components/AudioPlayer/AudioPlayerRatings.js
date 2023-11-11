@@ -5,32 +5,27 @@ import ReactStars from "react-rating-stars-component";
 
 function AudioPlayerRatings({songID, user}) {
   const [ratings, setRatings] = useState(0);
-  const ratingsRef = firestore.collection('ratings');
-  // const query = ratingsRef.orderBy('createdAt').limit(25);
 
 
   useEffect(() => {
     onSnapshot(doc(firestore, "/ratings/", songID), (doc) => {
-      setRatings(doc.data());
+      var arr = Object.values(doc.data());
+      var sum = (prev, cur) => ({rating: prev.rating + cur.rating});
+      var avg = arr.reduce(sum).rating / arr.length;
+      setRatings(avg);
     });
-  }, [ratings])
+  }, [songID])
 
-  const ratingChanged =(newRating) => {
-    ratingsRef.doc(songID).set({
-      ratings: {"uid": user.uid, "rating": newRating},
-    })
-    console.log(newRating);
-  };
-
+  console.log("rating",ratings)
 
   if (ratings) {
     return (
       <>
         <ReactStars
           count={5}
-          onChange={ratingChanged}
           size={24}
           activeColor="#ffd700"
+          edit={false}
         />
       </>
     )
@@ -39,9 +34,10 @@ function AudioPlayerRatings({songID, user}) {
       <>
         <ReactStars
           count={5}
-          onChange={ratingChanged}
+          value={0}
           size={24}
           activeColor="#ffd700"
+          edit={false}
         />
       </>
     )

@@ -6,7 +6,7 @@ import firebase from 'firebase/compat/app';
 import {Button,Form} from 'react-bootstrap';
 import { BsSendFill } from 'react-icons/bs';
 
-function ChatRoom({user}) {
+function ChatRoom({user,rate}) {
   const dummy = useRef();
   const messagesRef = firestore.collection('messages');
   const query = messagesRef.orderBy('createdAt').limit(25);
@@ -28,10 +28,15 @@ function ChatRoom({user}) {
       photoURL
     })
 
+    if (formValue.startsWith("!rate")) {
+      const value = formValue.split("!rate")[1]
+      rate(parseInt(value))
+    }
+
     setFormValue('');
     dummy.current.scrollIntoView({ behavior: 'smooth' });
   }
-
+  
   return (
     <div>
       <div className='chat-messages-div'>

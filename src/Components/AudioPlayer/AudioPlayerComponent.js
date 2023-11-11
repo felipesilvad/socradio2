@@ -1,80 +1,10 @@
-import React, {useRef, useState, useEffect} from 'react';
+import React from 'react';
 import AudioPlayer, { RHAP_UI } from 'react-h5-audio-player';
 import 'react-h5-audio-player/lib/styles.css';
-import { useCollectionData } from 'react-firebase-hooks/firestore';
-import {firestore} from '../../firebase';
 import {Image} from 'react-bootstrap';
-import { doc, getDoc, onSnapshot } from "firebase/firestore";
 import AudioPlayerRatings from './AudioPlayerRatings';
 
-function AudioPlayerComponent({station, user}) {
-  const player = useRef()
-
-  const songsRef = firestore.collection('songs');
-  // const query = songsRef.limit(5);
-  // const [songList] = useCollectionData(query, { idField: 'id' });
-  // const [currentSongIndex, setCurrentSongIndex] = useState(0);
-  const [currentSongIndex, setCurrentSongIndex] = useState();
-  const [currentSongStartTime, setCurrentSongStartTime] = useState();
-  const [playlist, setPlaylist] = useState();
-
-  // const setCurrentSongFromDB = (songID) => {
-  //   onSnapshot(doc(firestore, "/songs/", songID), (doc) => {
-  //     setCurrentSong(doc.data());
-  //   });
-  // }
-
-  const PlayAudio = () => {
-    if (player.current.audio.current) {
-      player.current.audio.current.play();
-    }
-  }
-
-  const toTime = (time) => {
-    if (player.current) {
-      const audio = player.current.audio.current
-      audio.currentTime = time;
-      console.log('moved to time', time)
-    }
-  };
-
-  const setCurrentSongFromAPI = async () => {
-    const response = await fetch(`http://127.0.0.1:5000/currentSong${station}`)
-    const song = await response.json();
-    setCurrentSongIndex(song.index)
-    setCurrentSongStartTime(song.startTime)
-
-    const now = new Date().getTime()
-    const seconds = now / 1000
-    toTime(seconds-song.startTime)
-  }
-
-  const onEndedSong = () => {
-    if (currentSongIndex+1===playlist.length) {
-      setCurrentSongIndex(0)
-    } else {
-      setCurrentSongIndex(i => i + 1)
-    }
-    // setCurrentSongFromAPI()
-  }
-
-  const setPlaylistSongFromAPI = async () => {
-    const response = await fetch(`http://127.0.0.1:5000/playlist${station}`)
-    const playlist = await response.json();
-    setPlaylist(playlist)
-  }
-
-  useEffect(() => {
-    setPlaylistSongFromAPI()
-  }, [])
-
-  useEffect(() => {
-    setCurrentSongFromAPI()
-  }, [playlist])
-
-
-  // console.log("playlist:",playlist)
-  // console.log("currentSongIndex",currentSongIndex)
+function AudioPlayerComponent({playlist, currentSongIndex, player, onEndedSong, user}) {
   
   if (Number.isInteger(currentSongIndex)) {
     return (
