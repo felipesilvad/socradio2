@@ -1,5 +1,5 @@
 import React, {useRef, useState, useEffect} from 'react';
-import { doc, getDoc, onSnapshot } from "firebase/firestore";
+import { doc, collection, onSnapshot } from "firebase/firestore";
 import {firestore} from '../../firebase';
 import ReactStars from "react-rating-stars-component";
 
@@ -8,25 +8,30 @@ function AudioPlayerRatings({songID, user}) {
 
 
   useEffect(() => {
-    onSnapshot(doc(firestore, "/ratings/", songID), (doc) => {
-      var arr = Object.values(doc.data());
-      var sum = (prev, cur) => ({rating: prev.rating + cur.rating});
-      var avg = arr.reduce(sum).rating / arr.length;
-      setRatings(avg);
+    onSnapshot(collection(firestore, "/ratings/", songID, "/ratings/"), (snapshot) => {
+      if (snapshot.docs) {
+        setRatings(snapshot.docs.map(doc => ({...doc.data()})))
+      }
     });
   }, [songID])
 
-  console.log("rating",ratings)
+  const getAvgRating = () => {
+    const average = ratings.reduce((total, next) => total + next.ratings, 0) / ratings.length;
+    return average
+  }
 
   if (ratings) {
     return (
       <>
         <ReactStars
           count={5}
+          value={getAvgRating()}
           size={24}
           activeColor="#ffd700"
           edit={false}
+          isHalf={true}
         />
+        {console.log(getAvgRating())}
       </>
     )
   } else {

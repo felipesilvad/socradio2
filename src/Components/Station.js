@@ -67,8 +67,8 @@ function StationComponent({user,station}) {
   const ratingsRef = firestore.collection('ratings');
 
   const rate =(newRating) => {
-    ratingsRef.doc(playlist[currentSongIndex].id).set({
-      ratings: {"uid": user.uid, "rating": newRating},
+    ratingsRef.doc(playlist[currentSongIndex].id).collection("ratings").doc(user.uid).set({
+      ratings: newRating,
     }, {merge: true})
     console.log(newRating);
   };
