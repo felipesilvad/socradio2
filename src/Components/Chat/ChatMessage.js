@@ -15,12 +15,15 @@ function ChatMessage(props) {
     });
   }, []);
   
-  return (<div key={idField}>
-    <p className='messages-username'>{userData&&(userData.username&&(userData.username))}</p>
-    <div className={`message ${user ?(uid === auth.currentUser.uid ? 'sent' : 'received') : 'received'}`}>
-      {/* <img className='profile-img' src={photoURL || 'https://api.adorable.io/avatars/23/abott@adorable.png'} /> */}
-      <p>{text}</p>
-    </div>
+  return (
+  <div key={idField} className='chat-message d-flex align-items-center h-100'>
+      <b className='messages-username m-1' style={{color: `${userData&&(userData.color&&(userData.color))}`}}>
+        {userData&&(userData.username&&(userData.username))}:
+      </b>
+      {/* <div className={`message ${user ?(uid === auth.currentUser.uid ? 'sent' : 'received') : 'received'}`}> */}
+        {/* <img className='profile-img' src={photoURL || 'https://api.adorable.io/avatars/23/abott@adorable.png'} /> */}
+      <a className='message-text'>{text}</a>
+      {/* </div> */}
   </div>)
 }
 

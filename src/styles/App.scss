@@ -1,4 +1,4 @@
-// @import './players';
+// @import './Chat';
 $sm: 576px;
 $md: 768px;
 $lg: 992px;
@@ -61,6 +61,15 @@ main {
   }
 }
 
+// .chat-message {
+//   border-radius: 0.5rem;
+// }
+.chat-message:hover{
+  transition: 100ms;
+  border-radius: 0.5rem;
+  background-color: lighten(#1E1E24, 10);
+}
+
 .chat-messages-div::-webkit-scrollbar {
   width: 0.25rem;
 }
@@ -91,46 +100,15 @@ ul, li {
   list-style: none;
 }
 
-.message p {
-  max-width: 500px;
-  margin-bottom: 12px;
-  line-height: 24px;
-  padding: 5px 10px;
-  border-radius: 5px;
-  position: relative;
-  color: white;
-  text-align: center;
-}
-
-.message {
-  display: flex;
-  align-items: center;
-}
-
 .messages-username {
   text-align: right;
   color: white;
-  line-height: 0;
-  margin-top: 0.2rem;
+  text-decoration: none;
 }
 
-.sent {
-  flex-direction: row-reverse;
-}
-
-.sent p {
+.message-text{
   color: white;
-  background: #0b93f6;
-  align-self: flex-end;
-}
-
-.received {
-  flex-direction: row-reverse;
-}
-
-.received p {
-  background: #e5e5ea;
-  color: black;
+  text-decoration: none;
 }
 
 .profile-img {

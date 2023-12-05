@@ -15,7 +15,7 @@ function ChatRoom({user,rate}) {
 
   const [formValue, setFormValue] = useState('');
 
-
+  console.log(messages)
   const sendMessage = async (e) => {
     e.preventDefault();
 

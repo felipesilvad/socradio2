@@ -1,10 +1,9 @@
 import React, {useRef, useState, useEffect} from 'react';
 import { doc, collection, onSnapshot } from "firebase/firestore";
 import {firestore} from '../../firebase';
-import ReactStars from "react-rating-stars-component";
 
-function AudioPlayerRatings({songID, user}) {
-  const [ratings, setRatings] = useState(0);
+function AudioPlayerRatings({songID}) {
+  const [ratings, setRatings] = useState();
 
 
   useEffect(() => {
@@ -23,27 +22,13 @@ function AudioPlayerRatings({songID, user}) {
   if (ratings) {
     return (
       <>
-        <ReactStars
-          count={5}
-          value={getAvgRating()}
-          size={24}
-          activeColor="#ffd700"
-          edit={false}
-          isHalf={true}
-        />
-        {console.log(getAvgRating())}
+        Rating: {getAvgRating()}
       </>
     )
   } else {
     return (
-      <>
-        <ReactStars
-          count={5}
-          value={0}
-          size={24}
-          activeColor="#ffd700"
-          edit={false}
-        />
+      <> 
+        No Ratings
       </>
     )
   }

@@ -6,7 +6,6 @@ import { Modal,Button,Form,Alert} from 'react-bootstrap';
 import { createUserWithEmailAndPassword,signInWithEmailAndPassword } from "firebase/auth";
 
 function SignIn() {
-
   // Getting All Users
   const [users, setUsers] = useState('')
   useEffect (() => {
@@ -14,6 +13,8 @@ function SignIn() {
       setUsers(snapshot.docs.map(doc => (doc.data().email)))
     });
   }, [])
+
+  const colors = ["#2a9d8f","#e9c46a","#f4a261","#e76f51","#219ebc","#ffb703","#fb8500","#8ecae6","#bdb2ff","#f07167","#c77dff"]
 
   const [signUp, setSignUp] = useState(false)
 
@@ -71,6 +72,7 @@ function SignIn() {
               uid: result.user.uid,
               email: result.user.email,
               username: username,
+              color: colors[Math.floor(Math.random() * colors.length)]
             })
           }).catch((error) => {
             const errorCode = error.code;

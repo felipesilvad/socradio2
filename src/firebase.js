@@ -9,7 +9,12 @@ import 'firebase/compat/firestore';
 import 'firebase/compat/analytics';
 
 firebase.initializeApp({
-  "Private"
+  apiKey: "AIzaSyCrTOka75SikkOR4pNA2Da999x0QPBfdg4",
+  authDomain: "soc-radio-f3953.firebaseapp.com",
+  projectId: "soc-radio-f3953",
+  storageBucket: "soc-radio-f3953.appspot.com",
+  messagingSenderId: "533854826784",
+  appId: "1:533854826784:web:87df494b5a2ecab4526745"
 })
 
 // const storage = getStorage(app);
