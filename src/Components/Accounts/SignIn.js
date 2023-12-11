@@ -1,8 +1,8 @@
 import React, {useState,useEffect} from 'react';
 import {auth,firestore} from '../../firebase';
 import firebase from 'firebase/compat/app';
-import {query,collection,onSnapshot} from "firebase/firestore";
-import { Modal,Button,Form,Alert} from 'react-bootstrap';
+import {query,collection,onSnapshot,where} from "firebase/firestore";
+import {Image,Modal,Button,Form,Alert,Row,Col} from 'react-bootstrap';
 import { createUserWithEmailAndPassword,signInWithEmailAndPassword } from "firebase/auth";
 
 function SignIn() {
@@ -14,10 +14,24 @@ function SignIn() {
     });
   }, [])
 
+  
+  // Profile Pic & Color
   const colors = ["#2a9d8f","#e9c46a","#f4a261","#e76f51","#219ebc","#ffb703","#fb8500","#8ecae6","#bdb2ff","#f07167","#c77dff"]
 
-  const [signUp, setSignUp] = useState(false)
+  const [profilePics, setProfilePics] = useState('')
+  const [selectedPic, setSelectedPic] = useState('Q82gC4OPteYZCJPP3ur2')
 
+  useEffect (() => {
+    onSnapshot(query(collection(firestore, `/profile-pics`), where("lv", "==", 1)), (snapshot) => {
+      setProfilePics(snapshot.docs.map(doc => ({...doc.data(), id: doc.id})))
+    });
+  }, [])
+
+  const selectImage = (id) => {
+    setSelectedPic(id)
+  }
+  
+  const [signUp, setSignUp] = useState(false)
   // SignInForm
   const [email, setEmail] = useState()
   const [username, setUsername] = useState()
@@ -56,6 +70,7 @@ function SignIn() {
           uid: result.user.uid,
           email: result.user.email,
           username: result.user.displayName,
+          profilePic: selectedPic
         })
       }
     })
@@ -72,7 +87,8 @@ function SignIn() {
               uid: result.user.uid,
               email: result.user.email,
               username: username,
-              color: colors[Math.floor(Math.random() * colors.length)]
+              color: colors[Math.floor(Math.random() * colors.length)],
+              profilePic: selectedPic
             })
           }).catch((error) => {
             const errorCode = error.code;
@@ -101,20 +117,37 @@ function SignIn() {
         </Modal.Header>
           {error && <Alert variant="danger">{error}</Alert>}
           {signUp?(<>
-            <Modal.Body>
-              <Form.Group id="email">
-                <Form.Label>Email</Form.Label>
-                <Form.Control onChange={(e) => setEmail(e.target.value)} type="email" required />
-              </Form.Group>
-              <Form.Group id="username">
-                <Form.Label>Username</Form.Label>
-                <Form.Control onChange={(e) => setUsername(e.target.value)} type="username" required />
-              </Form.Group>
-              <Form.Group id="password">
-                <Form.Label>Password</Form.Label>
-                <Form.Control onChange={(e) => setPassword(e.target.value)} type="password"  required />
-              </Form.Group>
-            </Modal.Body>
+            <Row>
+              <Col lg={5}>
+                <Modal.Body>
+                  <Form.Group id="email">
+                    <Form.Label>Email</Form.Label>
+                    <Form.Control autocomplete="off" onChange={(e) => setEmail(e.target.value)} type="email" required />
+                  </Form.Group>
+                  <Form.Group id="username">
+                    <Form.Label>Username</Form.Label>
+                    <Form.Control autocomplete="off" onChange={(e) => setUsername(e.target.value)} type="username" required />
+                  </Form.Group>
+                  <Form.Group id="password">
+                    <Form.Label>Password</Form.Label>
+                    <Form.Control autocomplete="off" onChange={(e) => setPassword(e.target.value)} type="password"  required />
+                  </Form.Group>
+                </Modal.Body>
+              </Col>
+              <Col lg={7}>
+                <Form.Label>Select Profile Pic</Form.Label>
+                <div>
+                  {!!profilePics && (profilePics.map(pic => (
+                    <>
+                      <Image src={pic.url} key={pic.id}
+                      className={(selectedPic === pic.id) ? ('pic-select pic-select-active') : ('pic-select')}
+                      onClick={() => selectImage(pic.id,pic.url)} />
+                    </>
+                  )))}
+                </div>
+              </Col>
+            </Row>
+            
             <Modal.Footer>
               <h6 className='sign-txt' onClick={() => setSignUp(false)}>
                 Already have an account? Sign In
@@ -127,12 +160,12 @@ function SignIn() {
             <Modal.Body>
               <Form.Group id="email">
                 <Form.Label>Email</Form.Label>
-                <Form.Control onChange={(e) => setEmail(e.target.value)} type="email" required />
+                <Form.Control autocomplete="off" onChange={(e) => setEmail(e.target.value)} type="email" required />
               </Form.Group>
 
               <Form.Group id="password">
                 <Form.Label>Password</Form.Label>
-                <Form.Control onChange={(e) => setPassword(e.target.value)} type="password"  required />
+                <Form.Control autocomplete="off" onChange={(e) => setPassword(e.target.value)} type="password"  required />
               </Form.Group>
             </Modal.Body>
             <Modal.Footer>

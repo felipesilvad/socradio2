@@ -15,7 +15,6 @@ function ChatRoom({user,rate}) {
 
   const [formValue, setFormValue] = useState('');
 
-  console.log(messages)
   const sendMessage = async (e) => {
     e.preventDefault();
 
@@ -25,7 +24,6 @@ function ChatRoom({user,rate}) {
       text: formValue,
       createdAt: firebase.firestore.FieldValue.serverTimestamp(),
       uid,
-      photoURL
     })
 
     if (formValue.startsWith("!rate")) {

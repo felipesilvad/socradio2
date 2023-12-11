@@ -4,6 +4,9 @@ $md: 768px;
 $lg: 992px;
 $xl: 1200px;
 
+$highlight: #0b93f6;
+$chat-bg: #1E1E24;
+
 body {
   background-color: #282c34;
 }
@@ -47,7 +50,7 @@ main {
 .chat-messages-div{
   position: absolute;
   top: 50%;
-  background-color: #1e1e24;
+  background-color: #1E1E24;
   z-index: 1;
   width: 100%;
   height: 45%;
@@ -66,7 +69,9 @@ main {
 // }
 .chat-message:hover{
   transition: 100ms;
-  border-radius: 0.5rem;
+  border-radius: 0.25rem;
+  margin-left: 0.1rem;
+  margin-right: 0.1rem;
   background-color: lighten(#1E1E24, 10);
 }
 
@@ -75,7 +80,7 @@ main {
 }
 
 .chat-messages-div::-webkit-scrollbar-track {
-  background: #1e1e24;
+  background: #1E1E24;
 }
 
 .chat-messages-div::-webkit-scrollbar-thumb {
@@ -291,4 +296,69 @@ input {
 .audio-test {
   position: absolute;
   z-index: 10;
+}
+
+.pic-select {
+  width: 6rem;
+  border-radius: 0.5rem;
+  margin: 0.2rem;
+  transition: 300ms;
+  border: none;
+  border: 0.2rem solid rgba($highlight, 0);
+}
+
+.pic-select:hover {
+  width: 6rem;
+  transition: 300ms;
+  border: 0.2rem solid rgba($highlight, 0.5);
+}
+
+.pic-select-active {
+  transition: 300ms;
+  width: 6rem;
+  border: 0.2rem solid $highlight;
+  background-color: $highlight;
+  -webkit-box-shadow: inset 0 0 15px #2c364a;
+  -moz-box-shadow: inset 0 0 15px #2c364a;
+  box-shadow: inset 0 0 15px #2c364a;
+}
+
+.modal {
+  --bs-modal-zindex: 1054;
+  --bs-modal-width: 1000px!important;
+  --bs-modal-padding: 1rem;
+  --bs-modal-margin: 0.5rem;
+  --bs-modal-color: white!important;
+  --bs-modal-bg: #1E1E24!important;
+  --bs-modal-border-color: var(--bs-border-color-translucent);
+  --bs-modal-border-width: var(--bs-border-width);
+  --bs-modal-border-radius: var(--bs-border-radius-lg);
+  --bs-modal-box-shadow: var(--bs-box-shadow-sm);
+  --bs-modal-inner-border-radius: calc(var(--bs-border-radius-lg) - (var(--bs-border-width)));
+  --bs-modal-header-padding-x: 1rem;
+  --bs-modal-header-padding-y: 1rem;
+  --bs-modal-header-padding: 1rem 1rem;
+  --bs-modal-header-border-color: var(--bs-border-color);
+  --bs-modal-header-border-width: var(--bs-border-width);
+  --bs-modal-title-line-height: 1.5;
+  --bs-modal-footer-gap: 0.5rem;
+  --bs-modal-footer-bg: ;
+  --bs-modal-footer-border-color: var(--bs-border-color);
+  --bs-modal-footer-border-width: var(--bs-border-width);
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: var(--bs-modal-zindex);
+  display: none;
+  width: 100%;
+  height: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+  outline: 0;
+}
+
+.profile-dropdown {
+  background-color: rgba($color: #000000, $alpha: 0)!important;
+  border: none!important;
+  padding: 0!important;
 }
