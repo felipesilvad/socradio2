@@ -8,11 +8,11 @@ function StationComponent({user,station}) {
   const [playlist, setPlaylist] = useState();
   const player = useRef()
 
-  // const setCurrentSongFromDB = (songID) => {
-  //   onSnapshot(doc(firestore, "/songs/", songID), (doc) => {
-  //     setCurrentSong(doc.data());
-  //   });
-  // }
+  const setCurrentSongFromDB = (songID) => {
+    // onSnapshot(doc(firestore, "/songs/", songID), (doc) => {
+    //   setCurrentSong(doc.data());
+    // });
+  }
 
   const PlayAudio = () => {
     if (player.current.audio.current) {
@@ -34,13 +34,13 @@ function StationComponent({user,station}) {
 
 
   const setCurrentSongFromAPI = async () => {
-    // const response = await fetch(`http://127.0.0.1:5000/currentSong${station}`)
-    // const song = await response.json();
-    // setCurrentSongIndex(song.index)
+    const response = await fetch(`http://127.0.0.1:5000/currentSong${station}`)
+    const song = await response.json();
+    setCurrentSongIndex(song.index)
 
-    // const now = new Date().getTime()
-    // const seconds = now / 1000
-    // toTime(seconds-song.startTime)
+    const now = new Date().getTime()
+    const seconds = now / 1000
+    toTime(seconds-song.startTime)
   }
 
   const onEndedSong = () => {
@@ -53,9 +53,9 @@ function StationComponent({user,station}) {
   }
 
   const setPlaylistSongFromAPI = async () => {
-    // const response = await fetch(`http://127.0.0.1:5000/playlist${station}`)
-    // const playlist = await response.json();
-    // setPlaylist(playlist)
+    const response = await fetch(`http://127.0.0.1:5000/playlist${station}`)
+    const playlist = await response.json();
+    setPlaylist(playlist)
   }
 
   useEffect(() => {

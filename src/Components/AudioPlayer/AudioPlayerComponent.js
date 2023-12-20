@@ -9,7 +9,6 @@ function AudioPlayerComponent({playlist, currentSongIndex, player, onEndedSong, 
   if (Number.isInteger(currentSongIndex)) {
     return (
       <>
-        {/* <Radio audio={currentSong.audio} /> */}
         <div className="audio-player-display" style={{
           backgroundImage: `url(${playlist[currentSongIndex].data.cover})`
         }}>

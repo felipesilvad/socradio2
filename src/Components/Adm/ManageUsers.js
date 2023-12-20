@@ -20,12 +20,20 @@ function ManageUsers() {
     { value: 'Admin', label: 'Admin' },
   ]
 
-  const groupStyles = {
-    color: "black",
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  };
-
+  const customStyles = {
+    option: provided => ({
+      ...provided,
+      color: 'black'
+    }),
+    control: provided => ({
+      ...provided,
+      color: 'black'
+    }),
+    singleValue: provided => ({
+      ...provided,
+      color: 'black'
+    })
+  }
   const updateRoles = (roles, userID) => {
     firestore.collection('users').doc(userID).set({
       roles: roles,
@@ -54,7 +62,7 @@ function ManageUsers() {
                   defaultValue={user.roles}
                   isMulti
                   options={roleOptions}
-                  styles={groupStyles}
+                  styles={customStyles}
                   onChange={(e) => updateRoles(e,user.uid)}
                 />
               </td>
