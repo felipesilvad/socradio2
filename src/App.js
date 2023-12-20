@@ -5,6 +5,7 @@ import {auth} from './firebase';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import StationComponent from './Components/Station';
 import {Routes, Route} from 'react-router-dom'
+import ManageUsers from './Components/Adm/ManageUsers';
 
 function App() {
 
@@ -16,6 +17,7 @@ function App() {
       <Routes>
         <Route path='/' element={<StationComponent user={user} station={"Main"} />} exact/>
         <Route path='/Chill' element={<StationComponent user={user} station={"Chill"} />} exact/>
+        <Route path='/adm/users' element={<ManageUsers user={user} />} exact/>
       </Routes>
       
     </div>

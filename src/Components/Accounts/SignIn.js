@@ -108,8 +108,8 @@ function SignIn() {
   }
   
   return (
-    <div>
-      <Button className="sign-in" onClick={handleShow}>Sign in</Button>
+    <>
+      <Button className="sign-in-btn my-3" onClick={handleShow}>Sign in</Button>
 
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
@@ -179,7 +179,7 @@ function SignIn() {
           </>)}
           
       </Modal>
-    </div>
+    </>
   )
 }
 export default SignIn;

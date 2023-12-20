@@ -4,6 +4,7 @@ import { doc, onSnapshot } from "firebase/firestore";
 import {Dropdown} from 'react-bootstrap';
 import SignOut from './SignOut';
 import ChatMessagePP from '../Chat/ChatMessagePP';
+import ChangePP from './ChangePP';
 
 function AccountHeader({user}) {
 
@@ -24,7 +25,8 @@ function AccountHeader({user}) {
       <Dropdown.Menu>
         <Dropdown.Item href="#/action-1">Action</Dropdown.Item>
         <Dropdown.Item href="#/action-2">Another action</Dropdown.Item>
-        <Dropdown.Item href="#/action-3">Something else</Dropdown.Item>
+        <ChangePP userID={user.uid}/>
+        <SignOut />
       </Dropdown.Menu>
     </Dropdown>
   )

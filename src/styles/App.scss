@@ -55,6 +55,7 @@ main {
   width: 100%;
   height: 45%;
   overflow: scroll;
+  padding-bottom: 0!important;
   @media only screen and (min-width: $lg) {
     top: 6%;
     left: 80%;
@@ -64,9 +65,9 @@ main {
   }
 }
 
-// .chat-message {
-//   border-radius: 0.5rem;
-// }
+.chat-message {
+  text-align: left!important;
+}
 .chat-message:hover{
   transition: 100ms;
   border-radius: 0.25rem;
@@ -77,6 +78,7 @@ main {
 
 .chat-messages-div::-webkit-scrollbar {
   width: 0.25rem;
+  height: 0.25rem;
 }
 
 .chat-messages-div::-webkit-scrollbar-track {
@@ -98,6 +100,20 @@ button:disabled {
   background: white;
   max-width: 400px;
   margin: 0 auto;
+}
+
+.sign-in-btn {
+  background-color: #282c34!important;
+  border-radius: 0.25rem!important;
+  border: solid 0.1rem #D81B60!important;
+  transition: 200ms;
+}
+
+.sign-in-btn:hover {
+  background-color: #D81B60!important;
+  border-radius: 0.25rem!important;
+  border: solid 0.1rem #D81B60!important;
+  transition: 200ms;
 }
 
 ul, li {
@@ -145,6 +161,10 @@ ul, li {
   @media only screen and (min-width: $lg) {
     background-position: right;
   }
+}
+
+.users-display {
+  margin-top: 5rem;
 }
 
 .cover-img {
