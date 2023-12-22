@@ -19,7 +19,7 @@ function AccountHeader({user}) {
   return (
     <Dropdown>
       <Dropdown.Toggle className='profile-dropdown m-2' id="dropdown-basic">
-        {userData&&(<ChatMessagePP id={userData.profilePic} />)}
+        {userData&&(<ChatMessagePP id={userData.profilePic} header={true} />)}
       </Dropdown.Toggle>
 
       <Dropdown.Menu>

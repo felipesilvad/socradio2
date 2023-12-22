@@ -1,10 +1,8 @@
 import React from 'react';
-import AudioPlayer, { RHAP_UI } from 'react-h5-audio-player';
-import 'react-h5-audio-player/lib/styles.css';
 import {Image} from 'react-bootstrap';
-import AudioPlayerRatings from './AudioPlayerRatings';
+import AudioPlayer from './AudioPlayer';
 
-function AudioPlayerComponent({playlist, currentSongIndex, player, onEndedSong, user}) {
+function AudioPlayerComponent({playlist, currentSongIndex, audioRef, onEndedSong, user, currentTime, setCurrentTime, updateRating}) {
   
   if (Number.isInteger(currentSongIndex)) {
     return (
@@ -21,21 +19,9 @@ function AudioPlayerComponent({playlist, currentSongIndex, player, onEndedSong, 
               <h2>{playlist[currentSongIndex].data.artist}</h2>
               <h4>{playlist[currentSongIndex].data.album}</h4>
             </div>
-            <AudioPlayer
-              autoPlay={true}
-              src={playlist[currentSongIndex].data.audio}
-              // onPlay={e => console.log("onPlay")}
-              ref={player}
-              onEnded={() => onEndedSong()}
-              showDownloadProgress={false}
-              showJumpControls={false}
-              hasDefaultKeyBindings={false}
-              autoPlayAfterSrcChange={true}
-              customControlsSection={[RHAP_UI.VOLUME_CONTROLS]}
-              layout={'horizontal'}
-            />
 
-            <AudioPlayerRatings songID={playlist[currentSongIndex].id} user={user} />
+            <AudioPlayer audioSrc={playlist[currentSongIndex].data.audio} audioRef={audioRef} songID={playlist[currentSongIndex].id} user={user}
+            onEndedSong={onEndedSong} currentTime={currentTime} setCurrentTime={setCurrentTime} updateRating={updateRating} />
 
           </div>
         </div>

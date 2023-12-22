@@ -39,7 +39,7 @@ function ChatRoom({user,rate}) {
     <div>
       <div className='chat-messages-div'>
         <div>
-          {messages && messages.map(msg => <ChatMessage key={msg.id} message={msg} />)}
+          {messages && messages.map(msg => <ChatMessage key={msg.id} message={msg} bot={msg.bot} />)}
           <span ref={dummy}></span>
         </div>
       </div>

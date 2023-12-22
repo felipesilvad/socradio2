@@ -1,111 +1,93 @@
-import { render } from "sass";
+import React, { useState, useEffect } from "react";
+import ProgressBar from 'react-bootstrap/ProgressBar';
+import { FaVolumeMute } from "react-icons/fa";
+import { FaVolumeUp } from "react-icons/fa";
+import {Button,Row,Col} from 'react-bootstrap';
+import AudioPlayerRatings from './AudioPlayerRatings';
 
-export default class AudioPlayer {
-    constructor(selector = '.audioPlayer', audio = []) {
-        this.playerElem = document.querySelector(selector);
-        this.audio = audio;
-        this.currentAudio = null;
-        this.createPlayerElements();
-        this.audioContext = null;
+function AudioPlayer({audioSrc, onEndedSong, audioRef, currentTime, setCurrentTime, user, songID, updateRating}) {
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [duration, setDuration] = useState(0);
+  const [volume, setVolume] = useState(1);
+  
+  const handlePlay = () => {
+    audioRef.current.play();
+    setIsPlaying(true);
+  };
+
+  const handleTimeUpdate = () => {
+    setCurrentTime(audioRef.current.currentTime);
+    setDuration(audioRef.current.duration);
+  };
+
+  function formatDuration(durationSeconds) {
+    const minutes = Math.floor(durationSeconds / 60);
+    const seconds = Math.floor(durationSeconds % 60);
+    const formattedSeconds = seconds.toString().padStart(2, "0");
+    return `${minutes}:${formattedSeconds}`;
+  }
+
+  const handleVolume = () => {
+    if (audioRef.current) {
+      if (audioRef.current.volume) {
+        audioRef.current.volume = 0;
+        setVolume(0)
+      } else {
+        audioRef.current.volume = 1;
+        setVolume(1)
+      }
     }
+  };
 
-    createVisualiser() {
-        this.audioContext = new AudioContext();
-        this.src = this.audioContext.createMediaElementSource(this.audioElem);
-        const analyser = this.audioContext.createAnalyser();
-        const canvas = this.visualiserElem;
-        const ctx = canvas.getContext('2d');
-        this.src.connect(analyser);
-        analyser.connect(this.audioContext.destination);
-        analyser.fftSize = 128;
-        const bufferLength = analyser.frequencyBinCount;
-        const dataArray = new Uint8Array(bufferLength);
-        const barWidth = (canvas.width / bufferLength) * 2.5;
-        let barHeight;
-        let bar;
-        
-        function renderFrame() {
-            requestAnimationFrame(renderFrame);
-            bar = 0;
-            analyser.getByteFrequencyData(dataArray);
-      
-            ctx.fillStyle = "#000";
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-      
-            for (let i = 0; i < bufferLength; i++) {
-              barHeight = dataArray[i] - 75;
-              const r = barHeight + (25 * (i/bufferLength));
-              ctx.fillStyle = `rgb(${r}, 100, 50)`;
-              ctx.fillRect(bar, canvas.height - barHeight, barWidth, barHeight);
-              bar += barWidth + 2;
-            }
-          }
+  useEffect(() => {
+    // handlePlay()
 
-          renderFrame();
-    }
-
-    createPlayerElements() {
-        this.audioElem = document.createElement('audio');
-        const playListElem = document.createElement('div');
-        playListElem.classList.add('playlist');
-        const playElem = document.createElement('button');
-        playElem.classList.add('play');
-        playElem.innerHTML = '<i class="fa fa-play"></i>';
-        this.visualiserElem = document.createElement('canvas');
-        this.playerElem.appendChild(this.audioElem);
-        this.playerElem.appendChild(playListElem);
-        this.playerElem.appendChild(this.visualiserElem);
-
-        this.createPlayListElements(playListElem);
-    }
-
-    createPlayListElements(playListElem) {
-        this.audio.forEach(audio => {
-            const audioItem = document.createElement('a');
-            audioItem.href = audio.url;
-            audioItem.innerHTML = `<i class="fa fa-play"></i>${audio.name}`;
-            this.setEventListener(audioItem);
-            playListElem.appendChild(audioItem);
-        });
-    }
-
-    setEventListener(audioItem) {
-        audioItem.addEventListener('click', (e) => {
-            e.preventDefault();
-            if (!this.audioContext) {
-                this.createVisualiser();
-            }
-            const isCurrentAudio = audioItem.getAttribute('href') == (this.currentAudio && this.currentAudio.getAttribute('href'));
-
-            if (isCurrentAudio && !this.audioElem.paused) {
-                this.setPlayIcon(this.currentAudio);
-                this.audioElem.pause();
-            } else if (isCurrentAudio && this.audioElem.paused) {
-                this.setPauseIcon(this.currentAudio);
-                this.audioElem.play();
-
-            } else {
-                if (this.currentAudio) {
-                    this.setPlayIcon(this.currentAudio);
-                }
-                this.currentAudio = audioItem;
-                this.setPauseIcon(this.currentAudio);
-                this.audioElem.src = this.currentAudio.getAttribute('href');
-                this.audioElem.play();
-            }
-
-        })
-    }
-
-    setPauseIcon(elem) {
-        const icon = elem.querySelector('i');
-        icon.classList.add('fa-pause');
-        icon.classList.remove('fa-play');
-    }
-
-    setPlayIcon(elem) {
-        const icon = elem.querySelector('i');
-        icon.classList.remove('fa-pause');
-        icon.classList.add('fa-play');
+    audioRef.current.addEventListener("timeupdate", handleTimeUpdate);
+    return () => {
+      audioRef.current.removeEventListener("timeupdate", handleTimeUpdate);
     };
+  }, []);
+
+  return (
+    <div className="player-card">
+      <Row >
+        <Col lg={1}>
+          <div className="mx-1">
+            {(volume) ? (
+              <>
+                <Button className="volume-button" onClick={() => handleVolume()}><FaVolumeUp className="volume-icon" /></Button>
+              </>
+            ) : (
+              <>
+                <Button className="volume-button volume-button-off" onClick={() => handleVolume()}><FaVolumeMute className="volume-icon" /></Button>
+              </>
+            )}
+          </div>
+        </Col>
+        <Col>
+          <ProgressBar variant="success" min="0" now={currentTime} max={duration} />
+          <div className="d-flex justify-content-between w-100">
+            <div className="mtsrt">{formatDuration(currentTime)}</div>
+            <div className="mtsrt">{formatDuration(duration)}</div>
+          </div>
+        </Col>
+      </Row>
+
+      <div className="d-flex pb-2 h-100 mx-1">
+        <div className="justify-content-center align-self-center">
+          <AudioPlayerRatings songID={songID} user={user} updateRating={updateRating} />
+        </div>
+        <div className="ml-2 mt-1 mtsrt justify-content-center align-self-center">
+          use command:
+        </div>
+        <div className="mx-1 mt-1 justify-content-center align-self-center">
+          {"!rate {number from 0 to 5}"}
+        </div>
+      </div>
+
+      <audio ref={audioRef} src={audioSrc} autoPlay={true} id="myAudio" onEnded={() => onEndedSong()} />
+    </div>
+  );
 }
+
+export default AudioPlayer;

@@ -3,7 +3,7 @@ import {firestore} from '../../firebase';
 import { doc, onSnapshot } from "firebase/firestore";
 
 
-function ChatMessagePP({id}) {
+function ChatMessagePP({id,header}) {
   const [profilePic, setProfilePic] = useState()
 
   useEffect(() => {
@@ -14,7 +14,7 @@ function ChatMessagePP({id}) {
 
   if (profilePic) {
     return (
-      <img className='profile-img' src={profilePic.url} />
+      <img className={`profile-img ${header&&("profile-img-header")}`} src={profilePic.url} />
     )
   }
 }
