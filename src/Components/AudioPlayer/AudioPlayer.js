@@ -46,6 +46,7 @@ function AudioPlayer({audioSrc, onEndedSong, audioRef, currentTime, setCurrentTi
     return () => {
       audioRef.current.removeEventListener("timeupdate", handleTimeUpdate);
     };
+    
   }, []);
 
   return (

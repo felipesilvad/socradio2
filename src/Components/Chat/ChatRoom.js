@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState,useEffect } from 'react';
 import { auth, firestore} from '../../firebase';
 import ChatMessage from './ChatMessage';
 import { useCollectionData } from 'react-firebase-hooks/firestore';
@@ -7,18 +7,26 @@ import {Button,Form} from 'react-bootstrap';
 import { BsSendFill } from 'react-icons/bs';
 
 function ChatRoom({user,rate}) {
+  const now = new Date()
+
   const dummy = useRef();
   const messagesRef = firestore.collection('messages');
-  const query = messagesRef.orderBy('createdAt').limit(25);
+
+  // const query = messagesRef.orderBy('createdAt');
+  const query = messagesRef.orderBy('createdAt', "desc").limit(15);
 
   const [messages] = useCollectionData(query, { idField: 'id' });
 
   const [formValue, setFormValue] = useState('');
 
+  useEffect (() => {
+    dummy.current.scrollIntoView({ behavior: 'smooth' });
+  }, [messages])
+
   const sendMessage = async (e) => {
     e.preventDefault();
 
-    const { uid, photoURL } = auth.currentUser;
+    const { uid } = auth.currentUser;
 
     await messagesRef.add({
       text: formValue,
@@ -34,12 +42,25 @@ function ChatRoom({user,rate}) {
     setFormValue('');
     dummy.current.scrollIntoView({ behavior: 'smooth' });
   }
+
+  function compare( a, b ) {
+    if ( a.createdAt< b.createdAt){
+      return -1;
+    }
+    if ( a.createdAt> b.createdAt){
+      return 1;
+    }
+    return 0;
+  }
   
   return (
     <div>
       <div className='chat-messages-div'>
         <div>
-          {messages && messages.map(msg => <ChatMessage key={msg.id} message={msg} bot={msg.bot} />)}
+          {messages && messages
+          .filter((msg) => (msg.createdAt&&(msg.createdAt.seconds*1000)) >= now-1000000)
+          .sort(compare)
+          .map(msg => <ChatMessage key={msg.id} message={msg} bot={msg.bot} />)}
           <span ref={dummy}></span>
         </div>
       </div>

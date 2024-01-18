@@ -59,8 +59,9 @@ main {
   text-align: center;
   border-radius: 0.2rem;
   background-color: lighten(#1E1E24, 10);
-  font-size: 1.1rem;
+  font-size: 0.8rem;
   padding: 0.5rem;
+  text-transform: uppercase;
 }
 
 .chat-messages-div{
@@ -472,4 +473,22 @@ input {
 .volume-icon {
   height: 2rem;
   width: 2rem;
+}
+
+.present-icon {
+  width: 2rem;
+  height: 2rem;
+  color: lighten($highlight, 8);
+  cursor: pointer;
+  margin-top: 0.4rem;
+}
+
+.present-icon-none {
+  color: gray;
+}
+
+.present-count {
+  border-radius: 10rem;
+  background-color: red;
+  font-weight: bold;
 }

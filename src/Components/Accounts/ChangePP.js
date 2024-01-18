@@ -2,7 +2,7 @@ import React, {useState,useEffect} from 'react';
 import {auth,firestore} from '../../firebase';
 import firebase from 'firebase/compat/app';
 import {query,collection,onSnapshot,where} from "firebase/firestore";
-import {Image,Modal,Button,Form,Alert,Row,Col,Dropdown} from 'react-bootstrap';
+import {Image,Modal,Button,Dropdown} from 'react-bootstrap';
 
 function ChangePP({userID}) {
 

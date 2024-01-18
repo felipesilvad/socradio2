@@ -4,11 +4,11 @@ import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import {Container, Image} from 'react-bootstrap';
 import AccountHeader from './Accounts/AccountHeader';
+
 function Header({user}){
 
   return (
     <div className='header'>
-      
       <div className='d-flex justify-content-between w-100'>
         <Navbar expand="lg" variant="dark" className="">
         <Container>
@@ -38,8 +38,9 @@ function Header({user}){
           </Navbar.Collapse>
         </Container>
       </Navbar>
-        
-      {user ? <AccountHeader user={user} /> : <SignIn />}
+      
+      
+      {user ? <AccountHeader user={user}  /> : <SignIn />}
       </div>
     </div>
   )

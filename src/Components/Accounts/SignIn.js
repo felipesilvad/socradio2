@@ -93,7 +93,7 @@ function SignIn() {
           }).catch((error) => {
             const errorCode = error.code;
             const errorMessage = error.message;
-            console.log(errorCode,errorMessage)
+            setError(errorMessage)
           })
         } else {
           setError('Username is required')
@@ -103,10 +103,8 @@ function SignIn() {
       }
     } catch (e) {
       setError(e.message)
-      console.log(e.message)
     }
   }
-  
   return (
     <>
       <Button className="sign-in-btn my-3" onClick={handleShow}>Sign in</Button>
@@ -115,7 +113,7 @@ function SignIn() {
         <Modal.Header closeButton>
           <Modal.Title>{signUp?('Sign Up'):('Sign In')}</Modal.Title>
         </Modal.Header>
-          {error && <Alert variant="danger">{error}</Alert>}
+          {error&&(<Alert variant="danger">{error}</Alert>)}
           {signUp?(<>
             <Row>
               <Col lg={5}>

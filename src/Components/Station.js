@@ -10,7 +10,8 @@ function StationComponent({user,station}) {
   const audioRef = useRef(null);
 
   const [currentTime, setCurrentTime] = useState(0);
-
+    
+  console.log(playlist)
 
   const handleSeek = (time) => {
     if (audioRef.current) {
@@ -26,7 +27,7 @@ function StationComponent({user,station}) {
   // }
 
   const setCurrentSongFromAPI = async () => {
-    const response = await fetch(`http://127.0.0.1:5000/currentSong${station}`)
+    const response = await fetch(`http://3.129.87.85:8000/currentSong${station}`)
     const song = await response.json();
     setCurrentSongIndex(song.index)
 
@@ -46,7 +47,7 @@ function StationComponent({user,station}) {
   }
 
   const setPlaylistSongFromAPI = async () => {
-    const response = await fetch(`http://127.0.0.1:5000/playlist${station}`)
+    const response = await fetch(`http://3.129.87.85:8000/playlist${station}`)
     const playlist = await response.json();
     setPlaylist(playlist)
   }
@@ -69,7 +70,6 @@ function StationComponent({user,station}) {
       uid: "Abr91NqhIRagi2UygmUZpehKnM52"
     })
   }
-
 
   // RATINGS
 
