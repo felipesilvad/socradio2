@@ -16,8 +16,8 @@ function App() {
       <Header user={user} />
       <Routes>
         <Route path='/' element={<StationComponent user={user} station={"Main"} />} exact/>
-        {/* <Route path='/Chill' element={<StationComponent user={user} station={"Chill"} />} exact/>
-        <Route path='/Event' element={<StationComponent user={user} station={"Event"} />} exact/> */}
+        <Route path='/Chill' element={<StationComponent user={user} station={"Chill"} />} exact/>
+        <Route path='/Event' element={<StationComponent user={user} station={"Event"} />} exact/>
         <Route path='/adm/users' element={<ManageUsers />} exact/>
         <Route path='/adm/songs' element={<ManageSongs />} exact/>
       </Routes>

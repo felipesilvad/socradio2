@@ -2,6 +2,7 @@ import React, {useRef, useState, useEffect} from 'react';
 import ChatRoom from './Chat/ChatRoom';
 import AudioPlayerComponent from './AudioPlayer/AudioPlayerComponent';
 import {firestore} from '../firebase';
+import { doc, onSnapshot, getDoc, collection} from "firebase/firestore";
 import firebase from 'firebase/compat/app';
 
 function StationComponent({user,station}) {
@@ -11,7 +12,7 @@ function StationComponent({user,station}) {
 
   const [currentTime, setCurrentTime] = useState(0);
     
-  console.log(playlist)
+  // console.log(playlist)
 
   const handleSeek = (time) => {
     if (audioRef.current) {
@@ -20,21 +21,31 @@ function StationComponent({user,station}) {
     }
   };
 
-  // const setCurrentSongFromDB = (songID) => {
-  //   onSnapshot(doc(firestore, "/songs/", songID), (doc) => {
-  //     setCurrentSong(doc.data());
-  //   });
-  // }
-
-  const setCurrentSongFromAPI = async () => {
-    const response = await fetch(`http://3.129.87.85:8000/currentSong${station}`)
-    const song = await response.json();
-    setCurrentSongIndex(song.index)
-
-    const now = new Date().getTime()
-    const seconds = now / 1000
-    handleSeek(seconds-song.startTime)
+  const setCurrentSongFromDB = async () => {
+    // onSnapshot(doc(firestore, `/${station}/currentSong`), (doc) => {
+    //   setCurrentSongIndex(doc.data().currentSong.index)
+    //   const now = new Date().getTime()
+    //   const seconds = now / 1000
+    //   handleSeek(seconds-doc.data().currentSong.startTime)
+    // });
+    getDoc(doc(collection(firestore, station), "currentSong"))
+    .then(doc => {
+      setCurrentSongIndex(doc.data().currentSong.index)
+      const now = new Date().getTime()
+      const seconds = now / 1000
+      handleSeek(seconds-doc.data().currentSong.startTime)
+    })
   }
+
+  // const setCurrentSongFromAPI = async () => {
+  //   const response = await fetch(`http://3.129.87.85:8000/currentSong${station}`)
+  //   const song = await response.json();
+  //   setCurrentSongIndex(song.index)
+
+  //   const now = new Date().getTime()
+  //   const seconds = now / 1000
+  //   handleSeek(seconds-song.startTime)
+  // }
 
 
   const onEndedSong = () => {
@@ -46,18 +57,24 @@ function StationComponent({user,station}) {
     // setCurrentSongFromAPI()
   }
 
-  const setPlaylistSongFromAPI = async () => {
-    const response = await fetch(`http://3.129.87.85:8000/playlist${station}`)
-    const playlist = await response.json();
-    setPlaylist(playlist)
+  // const setPlaylistSongFromAPI = async () => {
+  //   const response = await fetch(`http://3.129.87.85:8000/playlist${station}`)
+  //   const playlist = await response.json();
+  //   setPlaylist(playlist)
+  // }
+
+  const setPlaylistSongFromDB = async () => {
+    onSnapshot(doc(firestore, `/${station}/currentPlaylist`), (doc) => {
+      setPlaylist(doc.data().currentPlaylist)
+    });
   }
 
   useEffect(() => {
-    setPlaylistSongFromAPI()
+    setPlaylistSongFromDB()
   }, [])
 
   useEffect(() => {
-    setCurrentSongFromAPI()
+    setCurrentSongFromDB()
   }, [playlist])
 
   // BOT MESSAGE 
@@ -85,7 +102,6 @@ function StationComponent({user,station}) {
       setUpdateRating(!updateRating)
     } else {
       sendBotMessage("Rating needs to be between 0 and 5")
-      // console.log("Rating needs to be between 0 and 5")
     }
   };
 
