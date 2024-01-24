@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { query, collection, onSnapshot, doc} from 'firebase/firestore';
 import {firestore} from '../../firebase';
-import {Table, Form} from 'react-bootstrap';
+import {Table, Image} from 'react-bootstrap';
 import Select from 'react-select'
 
 function ManageSongs() {
@@ -63,7 +63,9 @@ function ManageSongs() {
       <Table striped bordered hover variant="dark">
         <thead>
           <tr>
-            <th>title</th>
+            <th>cover</th>
+            <th className='list-txt'>title</th>
+            <th className='list-txt'>album</th>
             <th>lv</th>
             <th>Playlist</th>
           </tr>
@@ -71,7 +73,9 @@ function ManageSongs() {
         <tbody>
           {songs.map((song) => (
             <tr>
-              <td>{song.title}</td>
+              <td className='p-0'><Image src={song.cover} className="list-cover-img" /></td>
+              <td className='list-txt'>{song.title}</td>
+              <td className='list-txt'>{song.album}</td>
               <td>{song.lv}</td>
               <td>
                 <Select

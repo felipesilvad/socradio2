@@ -2,7 +2,7 @@ import React from 'react';
 import {Image} from 'react-bootstrap';
 import AudioPlayer from './AudioPlayer';
 
-function AudioPlayerComponent({playlist, currentSongIndex, audioRef, onEndedSong, user, currentTime, setCurrentTime, updateRating}) {
+function AudioPlayerComponent({playlist, setCurrentSongFromDB, currentSongIndex, audioRef, onEndedSong, user, currentTime, setCurrentTime, updateRating}) {
   if (playlist) {
     if (Number.isInteger(currentSongIndex)) {
       const song = playlist[currentSongIndex]
@@ -24,7 +24,7 @@ function AudioPlayerComponent({playlist, currentSongIndex, audioRef, onEndedSong
                 <h4>{song.album}</h4>
               </div>
   
-              <AudioPlayer audioSrc={song.audio} audioRef={audioRef} songID={song.id} user={user}
+              <AudioPlayer audioSrc={song.audio} audioRef={audioRef} songID={song.id} user={user} setCurrentSongFromDB={setCurrentSongFromDB}
               onEndedSong={onEndedSong} currentTime={currentTime} setCurrentTime={setCurrentTime} updateRating={updateRating} />
   
             </div>

@@ -107,7 +107,7 @@ function StationComponent({user,station}) {
 
   return (
     <>
-      <AudioPlayerComponent playlist={playlist} currentSongIndex={currentSongIndex} updateRating={updateRating}
+      <AudioPlayerComponent playlist={playlist} currentSongIndex={currentSongIndex} updateRating={updateRating} setCurrentSongFromDB={setCurrentSongFromDB}
       audioRef={audioRef} user={user} onEndedSong={onEndedSong} currentTime={currentTime} setCurrentTime={setCurrentTime} />
       <ChatRoom user={user} rate={rate} />
     </>

@@ -457,22 +457,41 @@ input {
 
 .volume-button {
   background-color: $highlight!important;
-  font-size: 2rem;
+  font-size: 1.5rem;
   border: none!important;
   // padding: 0.25rem 1rem!important;
   // margin-right: 0.25rem;
-  width: 100%;
+  width: 31%;
 }
 .volume-button:hover {
   background-color: lighten($highlight, 8)!important;
 }
-.volume-button-off {
+.volume-button-off, .volume-button-off:hover {
   background-color: darken($highlight, 10)!important;
 }
 
+.volume-button-play {
+  width: 100%!important;
+}
 .volume-icon {
   height: 2rem;
   width: 2rem;
+}
+
+
+element.style {
+  width: 70.216%;
+}
+.progress-bar {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  overflow: hidden;
+  color: var(--bs-progress-bar-color);
+  text-align: center;
+  white-space: nowrap;
+  background-color: $highlight!important;
+  transition: var(--bs-progress-bar-transition);
 }
 
 .present-icon {
@@ -491,4 +510,18 @@ input {
   border-radius: 10rem;
   background-color: red;
   font-weight: bold;
+}
+
+.list-cover-img{
+  height: 50px;
+}
+
+.p-0 {
+  padding: 0!important;
+}
+
+.list-txt {
+  width: 30%;
+  overflow: hidden;
+  flex-wrap: nowrap;
 }
