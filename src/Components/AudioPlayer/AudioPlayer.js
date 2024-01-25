@@ -72,17 +72,17 @@ function AudioPlayer({audioSrc, onEndedSong, audioRef, currentTime, setCurrentTi
   }
 
   useEffect(() => {
-    // handlePlay()
-
     setTimeout(() => setLoading(false), 5000)
     audioRef.current.addEventListener("timeupdate", handleTimeUpdate);
     return () => {
       audioRef.current.removeEventListener("timeupdate", handleTimeUpdate);
     };
-    
   }, []);
 
-  console.log(isPlaying)
+  useEffect(() => {
+    setTimeout(() => setLoading(false), 5000)
+  }, [audioSrc]);
+
 
   return (
     <div className="player-card">
