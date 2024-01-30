@@ -64,6 +64,24 @@ main {
   text-transform: uppercase;
 }
 
+.playlist-div{
+  position: absolute;
+  top: 50%;
+  background-color: #1E1E24;
+  z-index: 1;
+  width: 100%;
+  height: 45%;
+  overflow: scroll;
+  padding-bottom: 0!important;
+  @media only screen and (min-width: $lg) {
+    top: 6%;
+    left: 80%;
+    width: 20%;
+    height: 94%;
+    padding-top: 0.75rem
+  }
+}
+
 .chat-messages-div{
   position: absolute;
   top: 50%;
@@ -459,9 +477,12 @@ input {
   background-color: $highlight!important;
   font-size: 1.5rem;
   border: none!important;
-  // padding: 0.25rem 1rem!important;
+  padding: 0.25rem 0rem !important;
   // margin-right: 0.25rem;
   width: 31%;
+  text-align: center;
+  display: flex;
+  justify-content: center;
 }
 .volume-button:hover {
   background-color: lighten($highlight, 8)!important;
@@ -524,4 +545,48 @@ element.style {
   width: 30%;
   overflow: hidden;
   flex-wrap: nowrap;
+}
+
+.playlist-song-title {
+  text-align: left;
+  color: white;
+}
+
+.playlist-tr {
+  border: solid 1px #181717;
+  border-radius: 0.2rem;
+}
+
+.react-select-container {
+  .react-select__control {
+    background-color: var($chat-bg);
+    border-color: var(--border-color);
+    transition: none;
+
+    &:hover {
+      border-color: var(--border-color);
+    }
+  }
+
+  .react-select__menu {
+    background-color: var($chat-bg);
+    border: 1px solid var(--border-color);
+  }
+
+  .react-select__option {
+    background-color: var($chat-bg);
+
+    &:hover {
+      background-color: var(--bg-primary);
+    }
+  }
+
+  .react-select__indicator-separator {
+    background-color: var(--border-color);
+  }
+
+  .react-select__placeholder,
+  .react-select__single-value {
+    color: var(--text-primary);
+  }
 }

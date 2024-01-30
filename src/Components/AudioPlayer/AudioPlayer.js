@@ -4,11 +4,11 @@ import { FaVolumeMute } from "react-icons/fa";
 import { FaVolumeUp } from "react-icons/fa";
 import {Button,Row,Col, Spinner} from 'react-bootstrap';
 import AudioPlayerRatings from './AudioPlayerRatings';
-import { FaPlus } from "react-icons/fa";
-import { FaMinus } from "react-icons/fa";
+import { FaPlus, FaPause,  FaMinus } from "react-icons/fa";
 import { FaPlay } from "react-icons/fa6";
+import { MdSkipNext } from "react-icons/md";
 
-function AudioPlayer({audioSrc, onEndedSong, audioRef, currentTime, setCurrentTime, user, songID, updateRating, setCurrentSongFromDB}) {
+function AudioPlayer({audioSrc, onEndedSong, audioRef, currentTime, setCurrentTime, user, songID, updateRating, setCurrentSongFromDB, dono}) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [duration, setDuration] = useState(0);
   const [volume, setVolume] = useState(1);
@@ -19,6 +19,16 @@ function AudioPlayer({audioSrc, onEndedSong, audioRef, currentTime, setCurrentTi
     setIsPlaying(true);
     setCurrentSongFromDB()
     console.log("play")
+  };
+
+  const handlePlayPause = () => {
+    if (isPlaying) {
+      audioRef.current.pause();
+      setIsPlaying(false);
+    } else {
+      audioRef.current.play();
+      setIsPlaying(true);
+    }
   };
 
   const handleTimeUpdate = () => {
@@ -87,9 +97,24 @@ function AudioPlayer({audioSrc, onEndedSong, audioRef, currentTime, setCurrentTi
   return (
     <div className="player-card">
       <Row >
-        <Col lg={3}>
+        <Col lg={(dono)?(5):(3)}>
           <div className="mx-1 d-flex justify-content-around">
-            {(isPlaying) ? (
+            {dono&&(
+              <>
+                <Button className="volume-button" onClick={() => handlePlayPause()}>
+                  {(isPlaying) ? (
+                    <FaPause className="volume-icon" />
+                  ) : (
+                    <FaPlay className="volume-icon" />
+                  )}
+                </Button>
+
+                <Button className="volume-button" onClick={() => onEndedSong()}><MdSkipNext className="volume-icon" /></Button>
+              </>
+            )}
+
+
+            {(isPlaying||dono) ? (
               <>
                 <Button className={`volume-button ${volume<0.09&&("volume-button-off")}`} onClick={() => lowerVolume()}><FaMinus className="volume-icon" /></Button>
               {(volume > 0.09) ? (
@@ -110,7 +135,6 @@ function AudioPlayer({audioSrc, onEndedSong, audioRef, currentTime, setCurrentTi
                 )}
               </Button>
             )}
-            
           </div>
         </Col>
         <Col>
