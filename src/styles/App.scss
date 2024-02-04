@@ -192,7 +192,7 @@ ul, li {
 }
 
 .audio-player-display{
-  height: 90vh;
+  height: 90.95vh;
   width: 90vw;
   background-size: cover;
   background-attachment: fixed;
@@ -202,6 +202,7 @@ ul, li {
   transform: scale(1.2);
   @media only screen and (min-width: $lg) {
     background-position: right;
+    width: 80vw;
   }
 }
 
@@ -474,7 +475,7 @@ input {
 }
 
 .volume-button {
-  background-color: $highlight!important;
+  background-color: $highlight;
   font-size: 1.5rem;
   border: none!important;
   padding: 0.25rem 0rem !important;
@@ -483,12 +484,15 @@ input {
   text-align: center;
   display: flex;
   justify-content: center;
+  color: white;
+  border-radius: 0.5rem;
+  text-shadow: 3px 3px 2px rgba(0, 0, 0, 1);
 }
 .volume-button:hover {
-  background-color: lighten($highlight, 8)!important;
+  // background-color: lighten($highlight, 8)!important;
 }
 .volume-button-off, .volume-button-off:hover {
-  background-color: darken($highlight, 10)!important;
+  // background-color: darken($highlight, 10)!important;
 }
 
 .volume-button-play {
@@ -511,7 +515,7 @@ element.style {
   color: var(--bs-progress-bar-color);
   text-align: center;
   white-space: nowrap;
-  background-color: $highlight!important;
+  // background-color: $highlight!important;
   transition: var(--bs-progress-bar-transition);
 }
 

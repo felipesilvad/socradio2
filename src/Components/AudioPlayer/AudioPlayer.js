@@ -2,13 +2,16 @@ import React, { useState, useEffect } from "react";
 import ProgressBar from 'react-bootstrap/ProgressBar';
 import { FaVolumeMute } from "react-icons/fa";
 import { FaVolumeUp } from "react-icons/fa";
-import {Button,Row,Col, Spinner} from 'react-bootstrap';
+import {button,Row,Col, Spinner} from 'react-bootstrap';
 import AudioPlayerRatings from './AudioPlayerRatings';
 import { FaPlus, FaPause,  FaMinus } from "react-icons/fa";
 import { FaPlay } from "react-icons/fa6";
 import { MdSkipNext } from "react-icons/md";
 
-function AudioPlayer({audioSrc, onEndedSong, audioRef, currentTime, setCurrentTime, user, songID, updateRating, setCurrentSongFromDB, dono}) {
+function AudioPlayer({
+  audioSrc, onEndedSong, audioRef, currentTime, setCurrentTime, 
+  user, songID, updateRating, setCurrentSongFromDB, dono, color
+}) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [duration, setDuration] = useState(0);
   const [volume, setVolume] = useState(1);
@@ -94,6 +97,13 @@ function AudioPlayer({audioSrc, onEndedSong, audioRef, currentTime, setCurrentTi
   }, [audioSrc]);
 
 
+  const bgColor = {
+    backgroundColor: `${color}`,
+  }
+  const barColor = {
+    '--bs-progress-bar-bg': `${color}`
+  }
+
   return (
     <div className="player-card">
       <Row >
@@ -101,31 +111,31 @@ function AudioPlayer({audioSrc, onEndedSong, audioRef, currentTime, setCurrentTi
           <div className="mx-1 d-flex justify-content-around">
             {dono&&(
               <>
-                <Button className="volume-button" onClick={() => handlePlayPause()}>
+                <button className="volume-button" style={bgColor} onClick={() => handlePlayPause()}>
                   {(isPlaying) ? (
                     <FaPause className="volume-icon" />
                   ) : (
                     <FaPlay className="volume-icon" />
                   )}
-                </Button>
+                </button>
 
-                <Button className="volume-button" onClick={() => onEndedSong()}><MdSkipNext className="volume-icon" /></Button>
+                <button className="volume-button" style={bgColor} onClick={() => onEndedSong()}><MdSkipNext className="volume-icon" /></button>
               </>
             )}
 
 
             {(isPlaying||dono) ? (
               <>
-                <Button className={`volume-button ${volume<0.09&&("volume-button-off")}`} onClick={() => lowerVolume()}><FaMinus className="volume-icon" /></Button>
+                <button className={`volume-button ${volume<0.09&&("volume-button-off")}`} style={bgColor} onClick={() => lowerVolume()}><FaMinus className="volume-icon" /></button>
               {(volume > 0.09) ? (
-                <Button className="volume-button" onClick={() => handleVolume()}><FaVolumeUp className="volume-icon" /></Button>
+                <button className="volume-button" style={bgColor} onClick={() => handleVolume()}><FaVolumeUp className="volume-icon" /></button>
               ) : (
-                <Button className="volume-button volume-button-off" onClick={() => handleVolume()}><FaVolumeMute className="volume-icon" /></Button>
+                <button className="volume-button volume-button-off" style={bgColor} onClick={() => handleVolume()}><FaVolumeMute className="volume-icon" /></button>
               )}
-              <Button className={`volume-button ${volume>0.91&&("volume-button-off")}`} onClick={() => increaseVolume()}><FaPlus className="volume-icon" /></Button>
+              <button className={`volume-button ${volume>0.91&&("volume-button-off")}`} style={bgColor} onClick={() => increaseVolume()}><FaPlus className="volume-icon" /></button>
               </>
             ): (
-              <Button className={"volume-button volume-button-play"} onClick={() => handlePlay()}>
+              <button className={"volume-button volume-button-play"} style={bgColor} onClick={() => handlePlay()}>
                 {(loading)? (
                   <Spinner animation="border" role="status">
                     <span className="visually-hidden">Loading...</span>
@@ -133,12 +143,12 @@ function AudioPlayer({audioSrc, onEndedSong, audioRef, currentTime, setCurrentTi
                 ): (
                   <FaPlay className="volume-icon" />
                 )}
-              </Button>
+              </button>
             )}
           </div>
         </Col>
         <Col>
-          <ProgressBar min="0" now={currentTime} max={duration} />
+          <ProgressBar min="0" now={currentTime} max={duration} style={barColor} />
           <div className="d-flex justify-content-between w-100">
             <div className="mtsrt">{formatDuration(currentTime)}</div>
             <div className="mtsrt">{formatDuration(duration)}</div>

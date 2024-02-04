@@ -6,12 +6,16 @@ function AudioPlayerComponent({playlist, setCurrentSongFromDB, currentSongIndex,
   if (playlist) {
     if (Number.isInteger(currentSongIndex)) {
       const song = playlist[currentSongIndex]
-      
+
       return (
         <>
           <div className="audio-player-display" 
           style={{
-            backgroundImage: `url(${song.cover})`
+            backgroundImage: `url(${song.cover})`,
+            backgroundColor: `${song.color}`,
+            '-webkit-box-shadow': `inset 0 0 100px ${song.color};`,
+            '-moz-box-shadow': `inset 0 0 100px ${song.color};`,
+            'box-shadow': `inset 0 0 100px ${song.color}`
           }}
           >
           </div>
@@ -26,7 +30,7 @@ function AudioPlayerComponent({playlist, setCurrentSongFromDB, currentSongIndex,
   
               <AudioPlayer audioSrc={song.audio} audioRef={audioRef} songID={song.id} user={user} setCurrentSongFromDB={setCurrentSongFromDB}
               onEndedSong={onEndedSong} currentTime={currentTime} setCurrentTime={setCurrentTime} updateRating={updateRating}
-              dono={dono} />
+              dono={dono} color={song.color} />
   
             </div>
           </div>
