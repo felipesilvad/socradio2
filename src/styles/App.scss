@@ -426,15 +426,59 @@ input {
   padding: 0!important;
 }
 
-.station-link{
+.station-link {
+  background-repeat: no-repeat!important;
+  background-size: cover!important;
+  background-position: left;
   border-radius: 0.25rem;
-  margin-left: 0.5rem;
+  margin-left: 0.25rem;
+  padding: 0!important;
+  background-color: #282c34;
+  min-height: 2rem;
+}
+
+.station-link-border {
+  border-radius: 0.25rem;
+  border: 0.1rem solid gray;
+  margin: 0 0.15rem;
+  height: 90%;
   transition: 200ms;
 }
 
-.station-link img{
-  height: 48px;
-  border-radius: 0.25rem;
+.station-link-border:hover {
+  border: 0.1rem solid $highlight;
+  transition: 200ms;
+}
+
+.station-link__div{
+  transition: 200ms;
+  padding: 0.1rem;
+}
+
+.station-txt {
+  z-index: 10;
+  padding-left: 0.2rem;
+  padding-right: 0.2rem;
+  line-height: 1;
+  padding-bottom: 0.25rem;
+  color: white!important;
+  min-width: 13rem;
+  text-shadow: 2px 2px 1px rgba(0, 0, 0, 0.9);
+}
+
+.station-txt__event-label {
+  font-size: 1rem;
+  text-transform: uppercase;
+  text-align: left;
+  margin-bottom: 0.5rem;
+}
+.station-txt__event {
+  font-size: 0.8rem;
+  text-align: left;
+  line-height: 1;
+  padding-left: 0.2rem;
+  border-radius: 20rem;
+  background-image: linear-gradient(to right, rgba(black, 0.8), rgba(black, 0));
 }
 
 .hover-underline-animation {
@@ -459,19 +503,6 @@ input {
 .hover-underline-animation:hover::after {
   transform: scaleX(1);
   transform-origin: bottom left;
-}
-
-.station-txt {
-  z-index: 10;
-  padding-left: 0.5rem;
-  padding-right: 0.5rem;
-  font-size: 1.4rem;
-  color: white;
-  text-shadow: 5px 5px 2px rgba(0, 0, 0, 0.9);
-}
-
-.st-txt-img {
-  margin-right: -3.4rem;
 }
 
 .volume-button {
@@ -593,4 +624,26 @@ element.style {
   .react-select__single-value {
     color: var(--text-primary);
   }
+}
+
+
+.calender-event__table {
+  height: 95vh;
+  margin-bottom: 0!important;
+  overflow: hidden;
+}
+
+.calender-event__item {
+  margin-top: 0.1rem;
+  border-radius: 0.25rem;
+  background-position: right;
+}
+
+.calender-event__txt {
+  font-size: 1.2rem;
+  border-radius: 0.25rem;
+  text-shadow: 2px 2px 2px rgba(0, 0, 0, 1);
+  font-weight: bold;
+  height: 100%;
+  background-color: rgba($color: #000000, $alpha: 0.1);
 }

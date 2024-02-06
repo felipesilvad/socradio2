@@ -8,6 +8,7 @@ import DonatorStation from './Components/DonatorStation';
 import {Routes, Route} from 'react-router-dom'
 import ManageUsers from './Components/Adm/ManageUsers';
 import ManageSongs from './Components/Adm/ManageSongs';
+import ManageEventCalendar from './Components/Adm/ManageEventCalendar';
 
 function App() {
   const [user] = useAuthState(auth);
@@ -20,6 +21,8 @@ function App() {
         <Route path='/Chill' element={<StationComponent user={user} station={"Chill"} />} exact/>
         <Route path='/Event' element={<StationComponent user={user} station={"Event"} />} exact/>
         <Route path='/Private' element={<DonatorStation user={user} station={"Private"} />} exact/>
+        
+        <Route path='/adm/events' element={<ManageEventCalendar />} exact/>
         <Route path='/adm/users' element={<ManageUsers />} exact/>
         <Route path='/adm/songs' element={<ManageSongs />} exact/>
       </Routes>
