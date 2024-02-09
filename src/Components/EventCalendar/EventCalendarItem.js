@@ -5,7 +5,6 @@ import {Table, Image} from 'react-bootstrap';
 
 function EventCalendarItem({event, startTime, endTime, isPreviusDayEvent}) {
   const [playlist, setPlaylist] = useState()
-
   useEffect(() => {
     onSnapshot(doc(firestore, "/playlist/", event.playlist), (doc) => {
       setPlaylist(doc.data());
@@ -20,10 +19,6 @@ function EventCalendarItem({event, startTime, endTime, isPreviusDayEvent}) {
       const subHours = 24 - startTime
       return (subHours * 100)/24
     }
-  }
-
-  if (isPreviusDayEvent) {
-    console.log(endTime.toDate().getHours())
   }
 
   if (playlist) {

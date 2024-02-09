@@ -532,6 +532,7 @@ input {
 .volume-icon {
   height: 2rem;
   width: 2rem;
+  text-shadow: 2px 2px 1px rgba(0, 0, 0, 0.9);
 }
 
 
@@ -646,4 +647,42 @@ element.style {
   font-weight: bold;
   height: 100%;
   background-color: rgba($color: #000000, $alpha: 0.1);
+}
+
+.playlist-display {
+  background-color:#282c34;
+  color: white;
+}
+
+.header-icon {
+  width: 2rem;
+  height: 2rem;
+  color: white;
+}
+
+.station-label {
+  white-space:nowrap;
+  position: absolute;
+  padding: 5px 50px;
+  // min-width: 300px;
+  transform: rotate(-20deg) translate(-37%, 0);
+  color: white;
+  text-align: center;
+  text-transform: uppercase;
+  font-size: 12px;
+  top: -15px;
+  box-sizing: border-box;
+  background-color: #282c34;
+  font-size: 1rem;
+  font-weight: bold;
+  display: none;
+  @media only screen and (min-width: $lg) {
+    display: block;
+  }
+}
+
+.stations-m {
+  @media only screen and (min-width: $lg) {
+    margin-left: 5.5rem;
+  }
 }

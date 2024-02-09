@@ -2,10 +2,13 @@ import React, {useEffect, useState} from 'react';
 import SignIn from './Accounts/SignIn';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
-import {Container, Image} from 'react-bootstrap';
+import {Container, OverlayTrigger, Button, Tooltip} from 'react-bootstrap';
 import AccountHeader from './Accounts/AccountHeader';
 import {firestore} from '../firebase';
 import {query, collection, onSnapshot, doc, orderBy, where, getDoc} from 'firebase/firestore';
+import { TbCalendarTime } from "react-icons/tb";
+import { Link } from 'react-router-dom';
+import Clock from "react-live-clock";
 
 function Header({user}){
   const [upcomingPlaylists, setUpcomingPlaylists] = useState([])
@@ -42,17 +45,25 @@ function Header({user}){
     }
   }, [currentPlaylist])
 
+  const tooltip = (text) => {
+    return (
+      <Tooltip id="tooltip">
+        {text}
+      </Tooltip>
+    )
+  }
+
+
   return (
     <div className='header'>
       <div className='d-flex justify-content-between w-100'>
         
         <Navbar expand="lg" variant="dark" className="">
         <Container>
-        {currDate&&(currDate.toLocaleTimeString())}
-          <Navbar.Brand>Stations:</Navbar.Brand>
+          <div className='station-label mtsrt'>Stations</div>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
-            <Nav className="me-auto">
+            <Nav className="me-auto stations-m">
               <Nav.Link className='station-link d-flex' style={{backgroundImage: `url(${eventImg})`}} href="/Event">
                 <div className='station-link-border justify-content-center align-self-center'>
                   <div className='station-link__div d-flex h-100'>
@@ -82,8 +93,18 @@ function Header({user}){
         </Container>
       </Navbar>
       
-      
-      {user ? <AccountHeader user={user}  /> : <SignIn />}
+      <div className='d-flex justify-conent-end align-self-center'>
+        <Clock className='d-flex justify-conent-end align-self-center mx-2' format={'HH:mm:ss'} ticking={true} />
+
+        <OverlayTrigger placement="bottom" 
+        overlay={tooltip("Event Station Calendar")}>
+          <Link to={"/event-calendar"} className='d-flex justify-conent-end align-self-center'>
+            <TbCalendarTime className='header-icon' />
+          </Link>
+        </OverlayTrigger>
+
+        {user ? <AccountHeader user={user}  /> : <SignIn />}
+      </div>
       </div>
     </div>
   )

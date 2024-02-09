@@ -58,7 +58,7 @@ function ChatRoom({user,rate}) {
       <div className='chat-messages-div'>
         <div>
           {messages && messages
-          .filter((msg) => (msg.createdAt&&(msg.createdAt.seconds*1000)) >= now-1000000)
+          .filter((msg) => (msg.createdAt&&(msg.createdAt.seconds*1000)) >= now-10000000)
           .sort(compare)
           .map(msg => <ChatMessage key={msg.id} message={msg} bot={msg.bot} />)}
           <span ref={dummy}></span>

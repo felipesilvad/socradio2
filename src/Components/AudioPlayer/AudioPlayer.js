@@ -2,11 +2,12 @@ import React, { useState, useEffect } from "react";
 import ProgressBar from 'react-bootstrap/ProgressBar';
 import { FaVolumeMute } from "react-icons/fa";
 import { FaVolumeUp } from "react-icons/fa";
-import {button,Row,Col, Spinner} from 'react-bootstrap';
+import {Row,Col, Spinner} from 'react-bootstrap';
 import AudioPlayerRatings from './AudioPlayerRatings';
 import { FaPlus, FaPause,  FaMinus } from "react-icons/fa";
 import { FaPlay } from "react-icons/fa6";
 import { MdSkipNext } from "react-icons/md";
+import bestContrast from 'get-best-contrast-color';
 
 function AudioPlayer({
   audioSrc, onEndedSong, audioRef, currentTime, setCurrentTime, 
@@ -96,13 +97,16 @@ function AudioPlayer({
     setTimeout(() => setLoading(false), 5000)
   }, [audioSrc]);
 
+  const pallete = ["#FEFEFE", "#2F4858", "#282C34"]
 
   const bgColor = {
     backgroundColor: `${color}`,
   }
   const barColor = {
-    '--bs-progress-bar-bg': `${color}`
+    '--bs-progress-bar-bg': `${color}`,
+    backgroundColor: bestContrast(color, pallete)
   }
+
 
   return (
     <div className="player-card">
