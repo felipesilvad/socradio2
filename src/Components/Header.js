@@ -32,16 +32,18 @@ function Header({user}){
     }
   }, [upcomingPlaylists])
   useEffect (() => {
-    if (currentPlaylist.playlist) {
-      const docRef = doc(firestore, "playlist", currentPlaylist.playlist);
-      getDoc(docRef).then(docSnap => {
-        if (docSnap.exists()) {
-          setEventImg(docSnap.data().img)
-          setEventTitle(docSnap.data().title)
-        } else {
-          console.log("No such document!");
-        }
-      })
+    if (currentPlaylist) {
+      if (currentPlaylist.playlist) {
+        const docRef = doc(firestore, "playlist", currentPlaylist.playlist);
+        getDoc(docRef).then(docSnap => {
+          if (docSnap.exists()) {
+            setEventImg(docSnap.data().img)
+            setEventTitle(docSnap.data().title)
+          } else {
+            console.log("No such document!");
+          }
+        })
+      }
     }
   }, [currentPlaylist])
 

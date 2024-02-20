@@ -23,7 +23,7 @@ function EventCalendarItem({event, startTime, endTime, isPreviusDayEvent}) {
 
   if (playlist) {
     return (
-      <div className='calender-event__item' 
+      <div key={event.id} className='calender-event__item' 
       style={{
         backgroundImage: `url(${playlist.img})`,
         height: `${getEventHeight()}%`
