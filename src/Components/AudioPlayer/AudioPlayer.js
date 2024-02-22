@@ -88,9 +88,9 @@ function AudioPlayer({
   useEffect(() => {
     setTimeout(() => setLoading(false), 5000)
     audioRef.current.addEventListener("timeupdate", handleTimeUpdate);
-    return () => {
-      audioRef.current.removeEventListener("timeupdate", handleTimeUpdate);
-    };
+    // return () => {
+    //   audioRef.current.removeEventListener("timeupdate", handleTimeUpdate);
+    // };
   }, []);
 
   useEffect(() => {
