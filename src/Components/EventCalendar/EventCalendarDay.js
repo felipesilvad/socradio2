@@ -30,7 +30,7 @@ function EventCalendarDay({day, events}) {
 
   if (day) {
     return (
-      <td>
+      <td className='event-calendar__td'>
         {dayEvents&&(dayEvents[0].startTime.toDate().getHours() !== 0&&(
           (events.indexOf(dayEvents[0])-1)>0&&(
             <EventCalendarItem event={events[events.indexOf(dayEvents[0])-1]}

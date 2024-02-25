@@ -22,13 +22,13 @@ function EventCalendar({events}) {
       <Table striped bordered hover variant="dark" className='calender-event__table'>
         <thead>
           <tr>
-            <th>{sunday.toUTCString()}</th>
-            <th>{monday.toUTCString()}</th>
-            <th>{tuesday.toUTCString()}</th>
-            <th>{wednesday.toUTCString()}</th>
-            <th>{thursday.toUTCString()}</th>
-            <th>{fryday.toUTCString()}</th>
-            <th>{saturday.toUTCString()}</th>
+            <th>{sunday.toString().slice(0,10)}</th>
+            <th>{monday.toString().slice(0,10)}</th>
+            <th>{tuesday.toString().slice(0,10)}</th>
+            <th>{wednesday.toString().slice(0,10)}</th>
+            <th>{thursday.toString().slice(0,10)}</th>
+            <th>{fryday.toString().slice(0,10)}</th>
+            <th>{saturday.toString().slice(0,10)}</th>
           </tr>
         </thead>
         <tbody className='h-100'>

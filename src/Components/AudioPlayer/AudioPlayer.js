@@ -2,12 +2,13 @@ import React, { useState, useEffect } from "react";
 import ProgressBar from 'react-bootstrap/ProgressBar';
 import { FaVolumeMute } from "react-icons/fa";
 import { FaVolumeUp } from "react-icons/fa";
-import {Row,Col, Spinner} from 'react-bootstrap';
+import {Row,Col,Spinner,Form} from 'react-bootstrap';
 import AudioPlayerRatings from './AudioPlayerRatings';
 import { FaPlus, FaPause,  FaMinus } from "react-icons/fa";
 import { FaPlay } from "react-icons/fa6";
 import { MdSkipNext } from "react-icons/md";
 import bestContrast from 'get-best-contrast-color';
+import VolumeRange from './VolumeRange'
 
 function AudioPlayer({
   audioSrc, onEndedSong, audioRef, currentTime, setCurrentTime, 
@@ -36,10 +37,12 @@ function AudioPlayer({
   };
 
   const handleTimeUpdate = () => {
-    setCurrentTime(audioRef.current.currentTime);
-    setDuration(audioRef.current.duration);
-    setVolume(audioRef.current.volume);
-    setIsPlaying(!audioRef.current.paused)
+    if (audioRef.current) {
+      setCurrentTime(audioRef.current.currentTime);
+      setDuration(audioRef.current.duration);
+      setVolume(audioRef.current.volume);
+      setIsPlaying(!audioRef.current.paused)
+    }
   };
 
   function formatDuration(durationSeconds) {
@@ -64,26 +67,33 @@ function AudioPlayer({
     }
   };
 
-  const lowerVolume = () => {
+  const changeVolume = (value) => {
     if (audioRef.current) {
       if (audioRef.current.volume) {
-        const newVolume = audioRef.current.volume-0.1;
-        if (newVolume>0) {
-          audioRef.current.volume = newVolume
-          setVolume(newVolume)
-        }
+        audioRef.current.volume = value/100
+        setVolume(value/100)
     }}
   }
-  const increaseVolume = () => {
-    if (audioRef.current) {
-      if (audioRef.current.volume) {
-        const newVolume = audioRef.current.volume+0.1;
-        if (newVolume<1.1) {
-          audioRef.current.volume = newVolume
-          setVolume(newVolume)
-        }
-    }}
-  }
+  // const lowerVolume = () => {
+  //   if (audioRef.current) {
+  //     if (audioRef.current.volume) {
+  //       const newVolume = audioRef.current.volume-0.1;
+  //       if (newVolume>0) {
+  //         audioRef.current.volume = newVolume
+  //         setVolume(newVolume)
+  //       }
+  //   }}
+  // }
+  // const increaseVolume = () => {
+  //   if (audioRef.current) {
+  //     if (audioRef.current.volume) {
+  //       const newVolume = audioRef.current.volume+0.1;
+  //       if (newVolume<1.1) {
+  //         audioRef.current.volume = newVolume
+  //         setVolume(newVolume)
+  //       }
+  //   }}
+  // }
 
   useEffect(() => {
     setTimeout(() => setLoading(false), 5000)
@@ -106,6 +116,7 @@ function AudioPlayer({
     '--bs-progress-bar-bg': `${color}`,
     backgroundColor: bestContrast(color, pallete)
   }
+  
 
 
   return (
@@ -115,7 +126,7 @@ function AudioPlayer({
           <div className="mx-1 d-flex justify-content-around">
             {dono&&(
               <>
-                <button className="volume-button" style={bgColor} onClick={() => handlePlayPause()}>
+                <button className="px-2 mt-1 volume-button" style={bgColor} onClick={() => handlePlayPause()}>
                   {(isPlaying) ? (
                     <FaPause className="volume-icon" />
                   ) : (
@@ -123,20 +134,23 @@ function AudioPlayer({
                   )}
                 </button>
 
-                <button className="volume-button" style={bgColor} onClick={() => onEndedSong()}><MdSkipNext className="volume-icon" /></button>
+                <button className="px-2 mt-1 volume-button" style={bgColor} onClick={() => onEndedSong()}><MdSkipNext className="volume-icon" /></button>
               </>
             )}
 
 
             {(isPlaying||dono) ? (
               <>
-                <button className={`volume-button ${volume<0.09&&("volume-button-off")}`} style={bgColor} onClick={() => lowerVolume()}><FaMinus className="volume-icon" /></button>
-              {(volume > 0.09) ? (
-                <button className="volume-button" style={bgColor} onClick={() => handleVolume()}><FaVolumeUp className="volume-icon" /></button>
-              ) : (
-                <button className="volume-button volume-button-off" style={bgColor} onClick={() => handleVolume()}><FaVolumeMute className="volume-icon" /></button>
-              )}
-              <button className={`volume-button ${volume>0.91&&("volume-button-off")}`} style={bgColor} onClick={() => increaseVolume()}><FaPlus className="volume-icon" /></button>
+                {/* <button className={`volume-button ${volume<0.09&&("volume-button-off")}`} style={bgColor} onClick={() => lowerVolume()}><FaMinus className="volume-icon" /></button> */}
+                {(volume > 0.09) ? (
+                  <button className="px-2 mt-1 volume-button" style={bgColor} onClick={() => handleVolume()}><FaVolumeUp className="volume-icon" /></button>
+                ) : (
+                  <button className="px-2 mt-1 volume-button volume-button-off" style={bgColor} onClick={() => handleVolume()}><FaVolumeMute className="volume-icon" /></button>
+                )}
+                {/* <button className={`volume-button ${volume>0.91&&("volume-button-off")}`} style={bgColor} onClick={() => increaseVolume()}><FaPlus className="volume-icon" /></button> */}
+
+                {/* <Form.Range  id="disabledRange" className="mx-2 align-self-center" style={rangeColor} onChange={(e) => changeVolume(e.target.value)} value={volume*100} /> */}
+                <VolumeRange changeVolume={changeVolume} volume={volume} />
               </>
             ): (
               <button className={"volume-button volume-button-play"} style={bgColor} onClick={() => handlePlay()}>
@@ -160,7 +174,7 @@ function AudioPlayer({
         </Col>
       </Row>
 
-      <div className="d-flex pb-2 h-100 mx-1">
+      <div className="ratings pb-2 mx-1">
         <div className="justify-content-center align-self-center">
           <AudioPlayerRatings songID={songID} user={user} updateRating={updateRating} />
         </div>

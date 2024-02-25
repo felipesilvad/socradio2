@@ -4,12 +4,14 @@ import AudioPlayerComponent from './AudioPlayer/AudioPlayerComponent';
 import {firestore} from '../firebase';
 import {onSnapshot, query, collection, where, limit} from "firebase/firestore";
 import firebase from 'firebase/compat/app';
-import PlaylistComponent from './PlaylistComponent';
+import PlaylistComponent from './Playlist/PlaylistComponent';
 
 function DonatorStation({user,station}) {
   const [currentSongIndex, setCurrentSongIndex] = useState();
   const [playlist, setPlaylist] = useState();
   const [playlistList, setPlaylistList] = useState();
+  const [currentPlaylist, setCurrentPlaylist] = useState();
+
   const audioRef = useRef(null);
 
   const [currentTime, setCurrentTime] = useState(0);
@@ -39,9 +41,9 @@ function DonatorStation({user,station}) {
 
   useEffect(() => {
     onSnapshot(query(collection(firestore, `/playlist`)), (snapshot) => {
-      setPlaylistList(snapshot.docs.map(doc => ({label: doc.data().title, value: doc.id})))
+      setPlaylistList(snapshot.docs.map(doc => ({...doc.data(), id: doc.id})))
     });
-    onSnapshot(query(collection(firestore, `/songs`), where("main", "==", true), limit(50)), (snapshot) => {
+    onSnapshot(query(collection(firestore, `/songs`), where("main", "==", true), limit(100)), (snapshot) => {
       setPlaylist(snapshot.docs.map(doc => ({...doc.data(), id: doc.id})))
     });
   }, [])
@@ -78,18 +80,49 @@ function DonatorStation({user,station}) {
     }
   };
 
-  return (
-    <>
-      <AudioPlayerComponent playlist={playlist} currentSongIndex={currentSongIndex} updateRating={updateRating} setCurrentSongFromDB={""}
-      audioRef={audioRef} user={user} onEndedSong={onEndedSong} currentTime={currentTime} setCurrentTime={setCurrentTime}
-      dono={true}  />
-      {/* <ChatRoom user={user} rate={rate} /> */}
-      {playlist&&(
-        <PlaylistComponent playlist={playlist} setCurrentSongIndex={setCurrentSongIndex} 
-        setPlaylistSongFromDB={setPlaylistSongFromDB} playlistList={playlistList} />
-      )}
-    </>
-  );
+  // RANGE FILTER
+
+  const [minFilter, setMinFilter] = useState(1);
+  const [maxFilter, setMaxFilter] = useState(5);
+
+
+  const changeRangeFilter = (e) => {
+    console.log(e)
+    setMinFilter(e[0])
+    setMaxFilter(e[1])
+    if (!currentPlaylist) {
+      if (minFilter > 3) {
+        onSnapshot(query(collection(firestore, `/songs`), where("lv", ">=", minFilter), limit(100)), (snapshot) => {
+          setPlaylist(snapshot.docs.map(doc => ({...doc.data(), id: doc.id})))
+        });
+      } else {   
+        onSnapshot(query(collection(firestore, `/songs`), where("lv", "<=", maxFilter), limit(100)), (snapshot) => {
+          setPlaylist(snapshot.docs.map(doc => ({...doc.data(), id: doc.id})))
+        });
+      }
+    }
+  }
+
+  function rangeFilter(song) {
+    return (song.lv >= minFilter) && (song.lv <= maxFilter);
+  }
+
+
+  if (playlist) {
+    return (
+      <>
+        {playlist.filter(rangeFilter).length>0&&(
+          <AudioPlayerComponent playlist={playlist.filter(rangeFilter)} currentSongIndex={currentSongIndex} updateRating={updateRating} setCurrentSongFromDB={""}
+          audioRef={audioRef} user={user} onEndedSong={onEndedSong} currentTime={currentTime} setCurrentTime={setCurrentTime}
+          dono={true}  />
+        )}
+        {/* <ChatRoom user={user} rate={rate} /> */}
+        <PlaylistComponent playlist={playlist.filter(rangeFilter)} setCurrentSongIndex={setCurrentSongIndex} currentSongIndex={currentSongIndex }
+        setPlaylistSongFromDB={setPlaylistSongFromDB} playlistList={playlistList} changeRangeFilter={changeRangeFilter}
+        setCurrentPlaylist={setCurrentPlaylist} currentPlaylist={currentPlaylist} />
+      </>
+    );
+  }
 }
 
 export default DonatorStation;

@@ -18,9 +18,9 @@ function App() {
       <Header user={user} />
       <Routes>
         <Route path='/' element={<StationComponent user={user} station={"Main"} />} exact/>
-        <Route path='/Chill' element={<StationComponent user={user} station={"Chill"} />} exact/>
-        <Route path='/Event' element={<StationComponent user={user} station={"Event"} />} exact/>
-        <Route path='/Private' element={<DonatorStation user={user} station={"Private"} />} exact/>
+        <Route path='/chill' element={<StationComponent user={user} station={"Chill"} />} exact/>
+        <Route path='/event' element={<StationComponent user={user} station={"Event"} />} exact/>
+        <Route path='/private' element={<DonatorStation user={user} station={"Private"} />} exact/>
         <Route path='/event-calendar' element={<ManageEventCalendar user={user} />} exact/>
         <Route path='/adm/users' element={<ManageUsers />} exact/>
         <Route path='/adm/songs' element={<ManageSongs />} exact/>
