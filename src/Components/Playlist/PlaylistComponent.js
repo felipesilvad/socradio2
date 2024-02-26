@@ -13,7 +13,7 @@ function PlaylistComponent({playlist,setCurrentSongIndex,setPlaylistSongFromDB,p
 
       <div className='playlist-table'>
         {(playlist.length>0)?(
-          <table>
+          <table className='w-100'>
             {playlist.map((song, index) => (
               <PlaylistSong song={song} index={index} setCurrentSongIndex={setCurrentSongIndex} currentSongIndex={currentSongIndex} />
             ))}

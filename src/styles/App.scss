@@ -624,7 +624,7 @@ element.style {
   border: solid 1px #181717;
   border-radius: 0.2rem;
   cursor: pointer!important;
-  width: 100%;
+  width: 100%!important;
 }
 
 .playlist-tr:hover {
@@ -744,6 +744,7 @@ element.style {
   -webkit-appearance: none;
   margin: 10px 0;
   width: 100%;
+  margin-left: -0.3rem;
 }
 .volume-input:focus {
   outline: none;
