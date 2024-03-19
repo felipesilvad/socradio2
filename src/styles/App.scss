@@ -84,8 +84,23 @@ main {
 }
 
 .playlist-table{
-  height: 92%;
+  height: 88%;
   overflow: scroll;
+}
+
+.playlist-table::-webkit-scrollbar {
+  width: 8px;
+}
+
+.playlist-table::-webkit-scrollbar-track {
+  border-radius: 5px;
+  background-color: #e7e7e7;
+  border: 1px solid #cacaca;
+}
+
+.playlist-table::-webkit-scrollbar-thumb {
+  border-radius: 5px;
+  background-color: #d55959;
 }
 
 .chat-messages-div{
@@ -246,7 +261,7 @@ ul, li {
   display: block;
   @media only screen and (min-width: $lg) {
     background-image: linear-gradient(to right, #080808, rgba(#080808,0.3));
-    top: 60%;
+    top: 50%;
     left: 35%;
     width: 45%;
   }
@@ -878,7 +893,24 @@ input {
   transition: 200ms;
   @media only screen and (min-width: $lg) {
     width: 50%;
+    overflow: hidden;
+    max-height: 80vh;
   }
+}
+
+.playlist-selector::-webkit-scrollbar {
+  width: 10px;
+}
+
+.playlist-selector::-webkit-scrollbar-track {
+  border-radius: 8px;
+  background-color: #e7e7e7;
+  border: 1px solid #cacaca;
+}
+
+.playlist-selector::-webkit-scrollbar-thumb {
+  border-radius: 8px;
+  background-color: #d55959;
 }
 
 
@@ -1050,7 +1082,13 @@ $thumb-size: 16px;
   height: 100%;
   background: lighten($highlight, 20)!important;
 }
-.station-txt-main{
+.stationplaylist-selector-txt-main{
   font-size: 1.4rem;
   text-shadow: 2px 2px 2px rgba(0, 0, 0, 1);
+}
+
+.message-display {
+  background-color: #181717;
+  min-height: 100vh;
+  color: white;
 }

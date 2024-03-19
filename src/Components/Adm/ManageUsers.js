@@ -34,10 +34,16 @@ function ManageUsers() {
       color: 'black'
     })
   }
-  const updateRoles = (roles, userID) => {
-    firestore.collection('users').doc(userID).set({
-      roles: roles,
+
+  const updateRoles = async (roles, userID) => {
+    var roleValues = []
+    roles.forEach(element => {
+      roleValues.push(element.value)
+    });
+    await firestore.collection('users').doc(userID).set({
+      roles: roleValues,
     }, {merge: true})
+    console.log(roleValues)
   }
 
   return (
@@ -59,7 +65,9 @@ function ManageUsers() {
               <td>
                 <Select
                   closeMenuOnSelect={false}
-                  defaultValue={user.roles}
+                  defaultValue={user.roles&&(roleOptions.filter(
+                    option => user.roles.includes(option.value)
+                  ))}
                   isMulti
                   options={roleOptions}
                   styles={customStyles}

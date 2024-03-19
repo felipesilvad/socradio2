@@ -45,13 +45,6 @@ function ManageSongs() {
   }
 
   const updateRoles = (playlist, songID) => {
-    console.log(playlist, songID)
-    playlist.map((playlistItem) => (
-      firestore.collection('playlist').doc(playlistItem.value).set({
-        songs: [...getPlaylistSongs(playlistItem.value), songID],
-      }, {merge: true})
-    ))
-    
     firestore.collection('songs').doc(songID).set({
       playlists: playlist,
     }, {merge: true})
