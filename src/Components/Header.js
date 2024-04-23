@@ -9,7 +9,9 @@ import {query, collection, onSnapshot, doc, orderBy, where, getDoc} from 'fireba
 import { TbCalendarTime } from "react-icons/tb";
 import { Link } from 'react-router-dom';
 import Clock from "react-live-clock";
-import { FaLock } from "react-icons/fa";
+import { FiGift } from "react-icons/fi";
+import HeaderStations from "./HeaderStations"
+import { FaCaretDown } from "react-icons/fa";
 
 function Header({user}){
   const [upcomingPlaylists, setUpcomingPlaylists] = useState([])
@@ -65,102 +67,56 @@ function Header({user}){
     )
   }
 
-  const privateStationTooltip = () => {
-    return (
-      <Tooltip id="tooltip">
-        Private Station for Subscribers only
-      </Tooltip>
-    )
-  }
+  
 
+  const [showNav, setShowNav] = useState(false)
 
   return (
     <div className='header'>
       <div className='d-flex justify-content-between w-100'>
-        
-        <Navbar expand="lg" variant="dark" className="">
-        <Container>
-          <div className='station-label mtsrt'>Stations</div>
-          <Navbar.Toggle aria-controls="basic-navbar-nav" />
-          <Navbar.Collapse id="basic-navbar-nav">
-            <Nav className="me-auto stations-m">
-              <Nav.Link className='station-link d-flex' style={{backgroundImage: `url(https://firebasestorage.googleapis.com/v0/b/soc-radio-f3953.appspot.com/o/mix%2Fmix1.jpg?alt=media&token=c5d8c87e-caea-482b-b89e-f74649ee5d9e)`}} href="/">
-                <div className='station-link-border justify-content-center align-self-center'>
-                  <div className='station-link__div d-flex h-100'>
-                    <div className='station-link d-flex h-100'>
-                      <div className='station-txt station-txt-main mtsrt justify-content-center align-self-center'>Mix</div>
-                    </div>
-                  </div>
-                </div>
-              </Nav.Link>
-              <Nav.Link className='station-link d-flex' style={{backgroundImage: `url(https://firebasestorage.googleapis.com/v0/b/soc-radio-f3953.appspot.com/o/chill%2FChill1.jpg?alt=media&token=cedc74d7-7e50-4baf-93ed-8cd2ac3aa254)`}} href="/chill">
-                <div className='station-link-border justify-content-center align-self-center'>
-                  <div className='station-link__div d-flex h-100'>
-                    <div className='station-link d-flex h-100'>
-                      <div className='station-txt station-txt-main mtsrt justify-content-center align-self-center'>Chill</div>
-                    </div>
-                  </div>
-                </div>
-              </Nav.Link>
-              <Nav.Link className='station-link d-flex' style={{backgroundImage: `url(${eventImg})`}} href="/event">
-                <div className='station-link-border justify-content-center align-self-center'>
-                  <div className='station-link__div d-flex h-100'>
-                    <div  className='mtsrt station-txt h-100 w-100'>
-                      <div className='station-txt__event-label'>
-                        Event
-                      </div>
-                      <div className='station-txt__event w-100'>
-                        {eventTitle}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </Nav.Link>
-              {userData&&(userData.roles.includes('Donator')||userData.roles.includes('Admin'))?(
-                <Nav.Link className='station-link d-flex'  href="/private">
-                  <div className='station-link-border justify-content-center align-self-center'>
-                    <div className='station-link__div d-flex h-100'>
-                      <div className='station-link d-flex h-100'>
-                        <div className='station-txt station-txt-main mtsrt justify-content-center align-self-center'>Private</div>
-                      </div>
-                    </div>
-                  </div>
-                </Nav.Link>
-              ) : (
-                <OverlayTrigger placement="bottom" 
-                  overlay={privateStationTooltip()}>
-                  <Nav.Link className='station-link d-flex'>
-                    <div className='station-link-border-deactive justify-content-center align-self-center'>
-                      <div className='lock-icon'>
-                        <FaLock />
-                      </div>
-                      <div className='station-link__div d-flex h-100'>
-                        <div className='station-link d-flex h-100'>
-                          <div className='station-txt station-txt-main station-txt-deactive mtsrt justify-content-center align-self-center'>Private</div>
-                        </div>
-                      </div>
-                    </div>
-                  </Nav.Link>
-                </OverlayTrigger>
-              )}
-              
-            </Nav>
-          </Navbar.Collapse>
-        </Container>
-      </Navbar>
+
+        <Navbar expand="lg" variant="dark" className="d-none d-lg-block">
+          <Container>
+            <div className='station-label mtsrt'>Stations</div>
+            <HeaderStations userData={userData} eventImg={eventImg} eventTitle={eventTitle} />
+          </Container>
+        </Navbar>
+
+        <div className='nav-bar-mobile d-lg-none d-xl-none'>
+
+          <div className='mtsrt nav-bar-mobile__btn' 
+          onClick={() => setShowNav(!showNav)}>
+            STATIONS <FaCaretDown />
+          </div>
+
+          {showNav&&(
+            <div className='nav-bar-show'>
+              <HeaderStations userData={userData} eventImg={eventImg} eventTitle={eventTitle} />
+            </div>
+          )}
+        </div>
       
-      <div className='d-flex justify-conent-end align-self-center'>
-        <Clock className='d-flex justify-conent-end align-self-center mx-2' format={'HH:mm:ss'} ticking={true} />
+        <div className='d-flex justify-conent-end align-self-center'>
 
-        <OverlayTrigger placement="bottom" 
-        overlay={tooltip("Event Station Calendar")}>
-          <Link to={"/event-calendar"} className='d-flex justify-conent-end align-self-center'>
-            <TbCalendarTime className='header-icon' />
-          </Link>
-        </OverlayTrigger>
+          <Clock className='d-none d-lg-block d-flex justify-conent-end align-self-center mx-2'
+           format={'HH:mm:ss'} ticking={true} />
+          
+          <OverlayTrigger placement="bottom" 
+          overlay={tooltip("No Unlockables available")}>
+            <div className='d-flex justify-conent-end align-self-center mx-2'>
+              <FiGift  className='header-icon-unavaible' />
+            </div>
+          </OverlayTrigger>
 
-        {user ? <AccountHeader user={user}  /> : <SignIn />}
-      </div>
+          <OverlayTrigger placement="bottom" 
+          overlay={tooltip("Event Station Calendar")}>
+            <Link to={"/event-calendar"} className='d-flex justify-conent-end align-self-center mx-2'>
+              <TbCalendarTime className='header-icon' />
+            </Link>
+          </OverlayTrigger>
+
+          {user ? <AccountHeader user={user}  /> : <SignIn />}
+        </div>
       </div>
     </div>
   )

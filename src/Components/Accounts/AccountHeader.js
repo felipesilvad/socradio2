@@ -86,7 +86,7 @@ function AccountHeader({user}) {
                 />
               </>
             )))}
-          </div>          
+          </div>
           <Modal.Footer>
             <Button variant="secondary" onClick={() => ClaimUnlocks()}>
               Claim
@@ -100,8 +100,8 @@ function AccountHeader({user}) {
       </Dropdown.Toggle>
 
       <Dropdown.Menu>
-        <Dropdown.Item href="#/action-1">Action</Dropdown.Item>
-        <Dropdown.Item href="#/action-2">Another action</Dropdown.Item>
+        {/* <Dropdown.Item href="#/action-1">Action</Dropdown.Item>
+        <Dropdown.Item href="#/action-2">Another action</Dropdown.Item> */}
         <ChangePP userID={user.uid}/>
         <SignOut />
       </Dropdown.Menu>

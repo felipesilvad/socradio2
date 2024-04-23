@@ -8,10 +8,13 @@ import DonatorStation from './Components/DonatorStation';
 import {Routes, Route} from 'react-router-dom'
 import {onSnapshot, doc} from 'firebase/firestore';
 import {firestore} from './firebase';
+import AdmMain from './Components/Adm/AdmMain';
 import ManageUsers from './Components/Adm/ManageUsers';
 import ManageSongs from './Components/Adm/ManageSongs';
+import ManagePlaylists from './Components/Adm/ManagePlaylists';
 import ManageEventCalendar from './Components/Adm/ManageEventCalendar';
 import ErrorRestrictedDonator from './Components/ErrorRestrictedDonator';
+import Footer from './Components/Footer'
 function App() {
   const [user] = useAuthState(auth);
 
@@ -27,6 +30,7 @@ function App() {
   return (
     <div className="App">
       <Header user={user} />
+      <Footer />
       <Routes>
         <Route path='/' element={<StationComponent user={user} station={"Main"} />} exact/>
         <Route path='/chill' element={<StationComponent user={user} station={"Chill"} />} exact/>
@@ -39,8 +43,10 @@ function App() {
         <Route path='/event-calendar' element={<ManageEventCalendar user={user} />} exact/>
         {(userData&&(userData.roles.includes('Admin'))&&(
           <>
+            <Route path='/adm' element={<AdmMain />} exact/>
             <Route path='/adm/users' element={<ManageUsers />} exact/>
             <Route path='/adm/songs' element={<ManageSongs />} exact/>
+            <Route path='/adm/playlists' element={<ManagePlaylists />} exact/>
           </>
         ))}
       </Routes>

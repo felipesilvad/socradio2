@@ -27,8 +27,7 @@ body {
 
 .header {
   background-color: #181717;
-  height: 6%;
-  min-height: 50px;
+  
   color: white;
   position: fixed;
   width: 100%;
@@ -39,13 +38,57 @@ body {
   z-index: 99;
   padding: 10px;
   box-sizing: border-box;
+  height: 8%;
   @media only screen and (min-width: $lg) {
     top: 0%;
     left: 0%;
     width: 100%;
+    height: 6%;
+    min-height: 50px;
   }
 }
 
+.footer {
+  background-color: #181717;
+  color: white;
+  position: fixed;
+  width: 80%;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 99;
+  padding: 10px;
+  box-sizing: border-box;
+  height: 5%;
+  // @media only screen and (min-width: $lg) {
+  //   top: 0%;
+  //   left: 0%;
+  //   width: 100%;
+  //   height: 6%;
+  //   min-height: 50px;
+  // }
+}
+
+.nav-bar-mobile {
+  margin-top: 1rem;
+}
+
+.nav-bar-mobile__btn {
+  border-radius: 0.2rem;
+  border: 0.1rem solid #2c364a;
+  padding: 0.25rem 0.5rem;
+  display: flex;
+}
+
+.nav-bar-show {
+  position: absolute;
+  top: 98%;
+  background-color: rgba($chat-bg, 0.9);
+  padding: 0.1rem;
+  border-radius: 0.2rem;
+  width: 65%;
+}
 
 main {
   padding: 10px;
@@ -54,6 +97,14 @@ main {
   overflow-y: scroll;
   display: flex;
   flex-direction: column;
+}
+
+.version-btn {
+  cursor: pointer;
+}
+
+.version-btn:hover {
+  color: $highlight;
 }
 
 .chat-message-bot{
@@ -84,12 +135,13 @@ main {
 }
 
 .playlist-table{
-  height: 88%;
+  height: 92%;
   overflow: scroll;
 }
 
 .playlist-table::-webkit-scrollbar {
   width: 8px;
+  height: 0px;
 }
 
 .playlist-table::-webkit-scrollbar-track {
@@ -100,7 +152,7 @@ main {
 
 .playlist-table::-webkit-scrollbar-thumb {
   border-radius: 5px;
-  background-color: #d55959;
+  background-color: $highlight;
 }
 
 .chat-messages-div{
@@ -233,11 +285,11 @@ ul, li {
 
 .cover-img {
   position: absolute;
-  top: 2%;
+  top: 7%;
   left: 50%;
   transform: translate(-50%, 0);
   z-index: 2;
-  height: 43.5%;
+  height: 45%;
   max-width: 95%;
   @media only screen and (min-width: $lg) {
     top: 20%;
@@ -342,6 +394,7 @@ input {
 .send-message{
   z-index: 4;
   height: 5%;
+  min-height: 2rem;
   bottom: 0;
   width: 100%;
   position: absolute;
@@ -456,6 +509,11 @@ input {
   padding: 0!important;
   // background-color: #282c34;
   min-height: 2rem;
+  @media only screen and (max-width: $lg) {
+    width: 100%;
+    min-height: 3rem;
+    margin-top: 0.25rem;
+  }
 }
 
 
@@ -465,6 +523,7 @@ input {
   margin: 0 0.15rem;
   height: 90%;
   transition: 200ms;
+  width: 100%;
 }
 
 .station-link-border:hover {
@@ -496,6 +555,10 @@ input {
   color: white!important;
   min-width: 13rem;
   text-shadow: 2px 2px 1px rgba(0, 0, 0, 0.9);
+  @media only screen and (max-width: $lg) {
+    font-size: 1.2rem;
+    text-shadow: 5x 5x 4px rgba(0, 0, 0, 0.9);
+  }
 }
 .station-txt-deactive {
   color: gray!important;
@@ -629,6 +692,10 @@ element.style {
   flex-wrap: nowrap;
 }
 
+.playlist-add-img {
+  width: 8rem;
+  margin: -0.5rem 0.25rem
+}
 .playlist-song-title {
   text-align: left;
   color: white;
@@ -719,6 +786,12 @@ element.style {
   width: 2rem;
   height: 2rem;
   color: white;
+}
+
+.header-icon-unavaible {
+  width: 2rem;
+  height: 2rem;
+  color: rgb(80, 80, 80);
 }
 
 .station-label {
@@ -859,7 +932,6 @@ input {
   color: white!important;
   background-color: lighten(#1E1E24, 5);
   border-radius: 0.2rem;
-  
   border: 0.1rem solid #2c364a;
   cursor: pointer;
   background-repeat: no-repeat!important;
@@ -883,6 +955,18 @@ input {
   background-color: rgba(#000000, 0.2);
   padding: 0.2rem 0.5rem;
   border-radius: 0.2rem;
+  font-size: 0.9rem;
+  display: flex;
+}
+
+.playlist-select__overlay-txt {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.search-playlist {
+  font-size: 0.9rem!important;
 }
 
 .playlist-selector {
@@ -890,16 +974,19 @@ input {
   position: absolute;
   background-color: #282c34;
   width: 100%;
+  overflow: scroll;
   transition: 200ms;
   @media only screen and (min-width: $lg) {
-    width: 50%;
-    overflow: hidden;
-    max-height: 80vh;
+    width: 90%;
+    overflow: scroll;
+    max-height: 70vh;
+    border-radius: 0 0.25rem 0.25rem 0.25rem;
   }
 }
 
 .playlist-selector::-webkit-scrollbar {
-  width: 10px;
+  width: 2px;
+  height: 0px;
 }
 
 .playlist-selector::-webkit-scrollbar-track {
@@ -910,7 +997,7 @@ input {
 
 .playlist-selector::-webkit-scrollbar-thumb {
   border-radius: 8px;
-  background-color: #d55959;
+  background-color: $highlight;
 }
 
 
@@ -926,9 +1013,13 @@ input {
 .playlist-selector__overlay {
   padding: 0.8rem 0!important;
   margin: auto;
+  font-size: 0.8rem!important;
   background-color: rgba(#000000, 0.15);
 }
 
+.cursor-default {
+  cursor: default!important;
+}
 
 $thumb-size: 16px;
 

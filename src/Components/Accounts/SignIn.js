@@ -88,7 +88,8 @@ function SignIn() {
               email: result.user.email,
               username: username,
               color: colors[Math.floor(Math.random() * colors.length)],
-              profilePic: selectedPic
+              profilePic: selectedPic,
+              roles: []
             })
           }).catch((error) => {
             const errorCode = error.code;
