@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from 'react';
 import SignIn from './Accounts/SignIn';
-import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import {Container, OverlayTrigger, Tooltip} from 'react-bootstrap';
 import AccountHeader from './Accounts/AccountHeader';
@@ -67,8 +66,6 @@ function Header({user}){
     )
   }
 
-  
-
   const [showNav, setShowNav] = useState(false)
 
   return (
@@ -76,7 +73,7 @@ function Header({user}){
       <div className='d-flex justify-content-between w-100'>
 
         <Navbar expand="lg" variant="dark" className="d-none d-lg-block">
-          <Container>
+          <Container className='mt-2'>
             <div className='station-label mtsrt'>Stations</div>
             <HeaderStations userData={userData} eventImg={eventImg} eventTitle={eventTitle} />
           </Container>

@@ -34,7 +34,9 @@ function Footer({user}){
           <Modal.Title>Features being worked</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          - Unlockables Profile Pics When Listening to Event Station
+          - Improve UI for mobile<br/>
+          - Unlockables Profile Pics When Listening to Event Station<br/>
+          - Fix Profile Pic Change not changing until refresh<br/>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClose}>
