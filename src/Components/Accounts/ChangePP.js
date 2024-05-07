@@ -2,7 +2,7 @@ import React, {useState,useEffect} from 'react';
 import {auth,firestore} from '../../firebase';
 import firebase from 'firebase/compat/app';
 import {query,collection,onSnapshot,where} from "firebase/firestore";
-import {Image,Modal,Button,Dropdown} from 'react-bootstrap';
+import {Image,Modal,Button,Dropdown,Alert} from 'react-bootstrap';
 
 function ChangePP({userID}) {
 
@@ -18,6 +18,10 @@ function ChangePP({userID}) {
   const selectImage = (id) => {
     setSelectedPic(id)
   }
+
+  const [loading, setLoading] = useState(false);
+  const [done, setDone] = useState(false);
+
   // Modal
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
@@ -26,11 +30,16 @@ function ChangePP({userID}) {
   const usersRef = firestore.collection('users');
 
   const SavePP = async () => {
+    setLoading(true)
     usersRef.doc(userID).set({
       profilePic: selectedPic
-    }, {merge: true}).then(data => (
-      console.log(data)
-    ))
+    }, {merge: true}).then(
+      setDone(true)
+    )
+  }
+
+  function refreshPage(){ 
+    window.location.reload(); 
   }
 
   return (
@@ -43,19 +52,24 @@ function ChangePP({userID}) {
         </Modal.Header>
           <div>
             {!!profilePics && (profilePics.map(pic => (
-              <>
-                <Image src={pic.url} key={pic.id}
-                className={(selectedPic === pic.id) ? ('pic-select pic-select-active') : ('pic-select')}
-                onClick={() => selectImage(pic.id,pic.url)} />
-              </>
+              <Image src={pic.url} key={pic.id}
+              className={(selectedPic === pic.id) ? ('pic-select pic-select-active') : ('pic-select')}
+              onClick={() => selectImage(pic.id,pic.url)} />
             )))}
           </div>          
           <Modal.Footer>
-            <Button variant="secondary" onClick={() => SavePP()}>
+            {done&&(
+              <div className='d-flex mtsrt text-success'>
+                PROFILE PIC UPDATED
+                <b className='reload-btn mx-1' onClick={refreshPage}>
+                  Reload
+                </b>
+              </div>
+            )}
+            <Button className='sign-in-btn' onClick={() => SavePP()}>
               Save
             </Button>
           </Modal.Footer>
-          
       </Modal>
     </>
   )

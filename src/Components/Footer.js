@@ -36,7 +36,9 @@ function Footer({user}){
         <Modal.Body>
           - Improve UI for mobile<br/>
           - Unlockables Profile Pics When Listening to Event Station<br/>
-          - Fix Profile Pic Change not changing until refresh<br/>
+          - Loading animation when sending message<br/>
+          - See Other People Profile info on chat<br/>
+          - Add bot message when !rate diplaying which song was rated<br/>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClose}>

@@ -12,7 +12,7 @@ import VolumeRange from './VolumeRange'
 
 function AudioPlayer({
   audioSrc, onEndedSong, audioRef, currentTime, setCurrentTime, 
-  user, songID, updateRating, setCurrentSongFromDB, dono, color
+  user, songID, updateRating, setCurrentSongFromDB, dono, color,
 }) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [duration, setDuration] = useState(0);
@@ -123,7 +123,7 @@ function AudioPlayer({
     <div className="player-card">
       <Row >
         <Col lg={(dono)?(5):(3)}>
-          <div className="mx-1 d-flex justify-content-around">
+          <div className="mx-1 d-flex justify-content-around pb-2">
             {dono&&(
               <>
                 <button className="px-2 mt-1 volume-button" style={bgColor} onClick={() => handlePlayPause()}>
@@ -165,7 +165,7 @@ function AudioPlayer({
             )}
           </div>
         </Col>
-        <Col>
+        <Col className="px-1">
           <ProgressBar min="0" now={currentTime} max={duration} style={barColor} />
           <div className="d-flex justify-content-between w-100">
             <div className="mtsrt">{formatDuration(currentTime)}</div>
@@ -174,17 +174,19 @@ function AudioPlayer({
         </Col>
       </Row>
 
-      <div className="ratings pb-2 mx-1">
-        <div className="justify-content-center align-self-center">
-          <AudioPlayerRatings songID={songID} user={user} updateRating={updateRating} />
+      {!dono&&(
+        <div className="ratings pb-2 mx-1">
+          <div className="justify-content-center align-self-center">
+            <AudioPlayerRatings songID={songID} user={user} updateRating={updateRating} />
+          </div>
+          <div className="ml-2 mt-1 mtsrt justify-content-center align-self-center">
+            use command:
+          </div>
+          <div className="mx-1 mt-1 justify-content-center align-self-center">
+            {"!rate {number from 0 to 5}"}
+          </div>
         </div>
-        <div className="ml-2 mt-1 mtsrt justify-content-center align-self-center">
-          use command:
-        </div>
-        <div className="mx-1 mt-1 justify-content-center align-self-center">
-          {"!rate {number from 0 to 5}"}
-        </div>
-      </div>
+      )}
 
       <audio ref={audioRef} src={audioSrc} autoPlay={true} id="myAudio" onEnded={() => onEndedSong()} />
     </div>

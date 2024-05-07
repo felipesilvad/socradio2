@@ -66,15 +66,16 @@ function ChatRoom({user,rate}) {
       </div>
       {user ? (
         <Form onSubmit={sendMessage} className='send-message'>
-        <Form.Control value={formValue} onChange={(e) => setFormValue(e.target.value)} placeholder="Send a message" />
+        <Form.Control maxlength="200" value={formValue} onChange={(e) => setFormValue(e.target.value)} placeholder="Send a message" />
         <Button type="submit" className='send-btn' disabled={!formValue}>
           <BsSendFill className='mb-1' />
         </Button>
       </Form>
-      )
-       : <div className='sign-to-message'>
-        You need to Sign In to send messages
-      </div>}
+      ):(
+        <div className='sign-to-message'>
+          <Form.Control disabled placeholder="You need to Sign In to send messages" />
+        </div>
+      )}
     </div>
   )
 }

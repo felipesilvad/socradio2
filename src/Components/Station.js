@@ -4,6 +4,7 @@ import AudioPlayerComponent from './AudioPlayer/AudioPlayerComponent';
 import {firestore} from '../firebase';
 import { doc, onSnapshot, getDoc, collection} from "firebase/firestore";
 import firebase from 'firebase/compat/app';
+import Footer from './Footer'
 
 function StationComponent({user,station}) {
   const [currentSongIndex, setCurrentSongIndex] = useState();
@@ -110,6 +111,7 @@ function StationComponent({user,station}) {
       <AudioPlayerComponent playlist={playlist} currentSongIndex={currentSongIndex} updateRating={updateRating} setCurrentSongFromDB={setCurrentSongFromDB}
       audioRef={audioRef} user={user} onEndedSong={onEndedSong} currentTime={currentTime} setCurrentTime={setCurrentTime} />
       <ChatRoom user={user} rate={rate} />
+      <Footer />
     </>
   );
 }

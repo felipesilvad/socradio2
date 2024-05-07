@@ -4,6 +4,7 @@ import firebase from 'firebase/compat/app';
 import {query,collection,onSnapshot,where} from "firebase/firestore";
 import {Image,Modal,Button,Form,Alert,Row,Col} from 'react-bootstrap';
 import { createUserWithEmailAndPassword,signInWithEmailAndPassword } from "firebase/auth";
+import LoadingScreen from '../LoadingScreen';
 
 function SignIn() {
   // Getting All Users
@@ -49,10 +50,16 @@ function SignIn() {
     return signInWithEmailAndPassword(auth,email,password)
   };
 
+  // Load
+  const [loading, setLoading] = useState(false);
+
   const loginWithEmailHandler = (email, password) => {
+    setLoading(true)
     signInWithEmailAndPassword(auth, email, password)
       .then((result) => {
         const user = result.user;
+        console.log("user:",user)
+        setLoading(false)
       })
       .catch((error) => {
         const errorCode = error.code;
@@ -78,30 +85,35 @@ function SignIn() {
 
   const SignUp = () => {
     try{
-      if (!users.includes(email)) {
-        if (username) {
-          createUserWithEmailAndPassword(auth, email, password)
-          .then((result) => {
-            usersRef.doc(result.user.uid).set({
-              createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-              uid: result.user.uid,
-              email: result.user.email,
-              username: username,
-              color: colors[Math.floor(Math.random() * colors.length)],
-              profilePic: selectedPic,
-              roles: []
-            })
-          }).catch((error) => {
-            const errorCode = error.code;
-            const errorMessage = error.message;
-            setError(errorMessage)
-          })
-        } else {
-          setError('Username is required')
-        }
-      } else {
-        setError('Email already used')
-      }
+      if (email) {
+        if (!users.includes(email)) {
+          if (username) {
+            if (password) {
+              setLoading(true)
+              createUserWithEmailAndPassword(auth, email, password)
+              .then((result) => {
+                usersRef.doc(result.user.uid).set({
+                  createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                  uid: result.user.uid,
+                  email: result.user.email,
+                  username: username,
+                  color: colors[Math.floor(Math.random() * colors.length)],
+                  profilePic: selectedPic,
+                  unlockedPP: [],
+                  unlockedTitles: [],
+                  roles: []
+                })
+                setLoading(false)
+              }).catch((error) => {
+                setLoading(false)
+                const errorCode = error.code;
+                const errorMessage = error.message;
+                setError(errorMessage.replace('Firebase: ', ''))
+              })
+            } else {setError('Password is required')}
+          } else {setError('Username is required')}
+        } else {setError('Email already used')}
+      } else {setError('Email is required')}
     } catch (e) {
       setError(e.message)
     }
@@ -111,6 +123,9 @@ function SignIn() {
       <Button className="sign-in-btn my-3" onClick={handleShow}>Sign in</Button>
 
       <Modal show={show} onHide={handleClose}>
+        {loading&&(
+          <LoadingScreen />
+        )}
         <Modal.Header closeButton>
           <Modal.Title>{signUp?('Sign Up'):('Sign In')}</Modal.Title>
         </Modal.Header>
@@ -151,7 +166,7 @@ function SignIn() {
               <h6 className='sign-txt' onClick={() => setSignUp(false)}>
                 Already have an account? Sign In
               </h6>
-              <Button variant="secondary" onClick={() => SignUp()}>
+              <Button className='sign-in-btn' onClick={() => SignUp()}>
                 Sign Up
               </Button>
             </Modal.Footer>
@@ -171,7 +186,7 @@ function SignIn() {
               <h6 className='sign-txt' onClick={() => setSignUp(true)}>
                 Don't have an account? Sign Up
               </h6>
-              <Button variant="secondary" onClick={() => loginWithEmailHandler(email,password)}>
+              <Button className='sign-in-btn' onClick={() => loginWithEmailHandler(email,password)}>
                 Sign In
               </Button>
             </Modal.Footer>

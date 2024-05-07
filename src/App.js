@@ -14,23 +14,39 @@ import ManageSongs from './Components/Adm/ManageSongs';
 import ManagePlaylists from './Components/Adm/ManagePlaylists';
 import ManageEventCalendar from './Components/Adm/ManageEventCalendar';
 import ErrorRestrictedDonator from './Components/ErrorRestrictedDonator';
-import Footer from './Components/Footer'
+import LoadingScreen from './Components/LoadingScreen';
+
 function App() {
   const [user] = useAuthState(auth);
 
   const [userData, setUserData] = useState()
+  const [loading, setLoading] = useState(true)
+
+  const delay = ms => new Promise(res => setTimeout(res, ms));
+  const manualLoad = async () => {
+    await delay(5000);
+    setLoading(false)
+  };
+
   useEffect(() => {
     if (user) {
       onSnapshot(doc(firestore, "/users/", user.uid), (doc) => {
         setUserData(doc.data());
+        setLoading(false);
       });
+    } else {
+      manualLoad();
     }
   }, [user]);
 
   return (
     <div className="App">
       <Header user={user} />
-      <Footer />
+
+      {loading&&(
+        <LoadingScreen />
+      )}
+      
       <Routes>
         <Route path='/' element={<StationComponent user={user} station={"Main"} />} exact/>
         <Route path='/chill' element={<StationComponent user={user} station={"Chill"} />} exact/>

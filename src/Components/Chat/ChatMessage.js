@@ -28,15 +28,17 @@ function ChatMessage(props) {
     )
   } else {
     return (
-      <div key={idField} className='chat-message d-flex align-items-center h-100'>
-  
-        {userData&&(<ChatMessagePP id={userData.profilePic} />)}
-  
-        <b className='messages-username m-1' style={{color: `${userData&&(userData.color&&(userData.color))}`}}>
-          {userData&&(userData.username&&(userData.username))}:
-        </b>
-  
-        <a className='message-text'>{text}</a>
+      <div key={idField} className='chat-message d-flex '>
+        <div>
+          {userData&&(<ChatMessagePP id={userData.profilePic} />)}
+        </div>
+        <div>
+          <b className='messages-username m-1' style={{color: `${userData&&(userData.color&&(userData.color))}`}}>
+            {userData&&(userData.username&&(userData.username))}:
+          </b>
+    
+          <a className='message-text'>{text}</a>
+        </div>
       </div>
     )
   }

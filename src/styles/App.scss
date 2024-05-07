@@ -23,6 +23,7 @@ body {
 .App {
   text-align: center;
   // max-width: 728px;
+  background-color: #181717;
 }
 
 .header {
@@ -61,13 +62,10 @@ body {
   padding: 10px;
   box-sizing: border-box;
   height: 5%;
-  // @media only screen and (min-width: $lg) {
-  //   top: 0%;
-  //   left: 0%;
-  //   width: 100%;
-  //   height: 6%;
-  //   min-height: 50px;
-  // }
+  display: none;
+  @media only screen and (min-width: $lg) {
+    display:flex;
+  }
 }
 
 .nav-bar-mobile {
@@ -817,7 +815,7 @@ element.style {
 
 .stations-m {
   @media only screen and (min-width: $lg) {
-    margin-left: 5.5rem;
+    margin-left: 1.5rem;
   }
 }
 
@@ -1182,4 +1180,28 @@ $thumb-size: 16px;
   background-color: #181717;
   min-height: 100vh;
   color: white;
+}
+
+.reload-btn {
+  font-weight: bold;
+  color: $highlight;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.reload-btn:hover {
+  color: lighten($highlight, 5);
+}
+
+.loading-screen {
+  position:absolute;
+  height: 100%;
+  width: 100%;
+  bottom: 0;
+  background-color: rgba(#1E1E24, 0.7);
+  margin: auto;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }

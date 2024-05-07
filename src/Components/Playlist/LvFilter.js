@@ -10,7 +10,7 @@ const LvFilter = ({changeRangeFilter}) => {
         <b className='filter_chill'>Chill</b>
         <b className='filter_chill filter_hype'>Hype</b>
       </div>
-      <RangeSlider min={1} max={5} step={1} defaultValue={[1,5]} onInput={(e) => changeRangeFilter(e)} />
+      <RangeSlider min={2} max={4} step={1} defaultValue={[1,5]} onInput={(e) => changeRangeFilter(e)} />
     </>
   );
 };

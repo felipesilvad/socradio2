@@ -74,7 +74,7 @@ function Header({user}){
 
         <Navbar expand="lg" variant="dark" className="d-none d-lg-block">
           <Container className='mt-2'>
-            <div className='station-label mtsrt'>Stations</div>
+            <div className='mtsrt'>STATIONS</div>
             <HeaderStations userData={userData} eventImg={eventImg} eventTitle={eventTitle} />
           </Container>
         </Navbar>
@@ -95,8 +95,8 @@ function Header({user}){
       
         <div className='d-flex justify-conent-end align-self-center'>
 
-          <Clock className='d-none d-lg-block d-flex justify-conent-end align-self-center mx-2'
-           format={'HH:mm:ss'} ticking={true} />
+          {/* <Clock className='d-none d-lg-block d-flex justify-conent-end align-self-center mx-2'
+           format={'HH:mm:ss'} ticking={true} /> */}
           
           <OverlayTrigger placement="bottom" 
           overlay={tooltip("No Unlockables available")}>

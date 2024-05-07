@@ -5,6 +5,7 @@ import {firestore} from '../firebase';
 import {onSnapshot, query, collection, where, limit} from "firebase/firestore";
 import firebase from 'firebase/compat/app';
 import PlaylistComponent from './Playlist/PlaylistComponent';
+import Footer from './Footer'
 
 function DonatorStation({user,station}) {
   const [currentSongIndex, setCurrentSongIndex] = useState();
@@ -87,7 +88,6 @@ function DonatorStation({user,station}) {
 
 
   const changeRangeFilter = (e) => {
-    console.log(e)
     setMinFilter(e[0])
     setMaxFilter(e[1])
     if (!currentPlaylist) {
@@ -120,6 +120,7 @@ function DonatorStation({user,station}) {
         <PlaylistComponent playlist={playlist.filter(rangeFilter)} setCurrentSongIndex={setCurrentSongIndex} currentSongIndex={currentSongIndex }
         setPlaylistSongFromDB={setPlaylistSongFromDB} playlistList={playlistList} changeRangeFilter={changeRangeFilter}
         setCurrentPlaylist={setCurrentPlaylist} currentPlaylist={currentPlaylist} />
+        <Footer />
       </>
     );
   }
