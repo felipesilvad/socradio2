@@ -4,7 +4,7 @@ import { doc, onSnapshot } from "firebase/firestore";
 import ChatMessagePP from './ChatMessagePP';
 
 function ChatMessage(props) {
-  const { text, uid, idField, bot } = props.message;
+  const { text, uid, idField, bot, createdAt } = props.message;
 
   const [userData, setUserData] = useState()
   useEffect(() => {
@@ -12,6 +12,11 @@ function ChatMessage(props) {
       setUserData(doc.data());
     });
   }, []);
+
+  function secondsToHms(x) {
+    const myDate = new Date(x.seconds * 1000);
+    return myDate.toLocaleTimeString(navigator.language, {hour: '2-digit', minute:'2-digit'});
+  }
   
   if (bot) {
     return (
@@ -28,16 +33,21 @@ function ChatMessage(props) {
     )
   } else {
     return (
-      <div key={idField} className='chat-message d-flex '>
-        <div>
-          {userData&&(<ChatMessagePP id={userData.profilePic} />)}
+      <div key={idField} className='chat-message d-flex justify-content-between'>
+        <div className='d-flex'>
+          <div>
+            {userData&&(<ChatMessagePP id={userData.profilePic} />)}
+          </div>
+          <div>
+            <b className='messages-username m-1' style={{color: `${userData&&(userData.color&&(userData.color))}`}}>
+              {userData&&(userData.username&&(userData.username))}:
+            </b>
+            <a className='message-text'>{text}</a>
+          </div>
         </div>
-        <div>
-          <b className='messages-username m-1' style={{color: `${userData&&(userData.color&&(userData.color))}`}}>
-            {userData&&(userData.username&&(userData.username))}:
-          </b>
-    
-          <a className='message-text'>{text}</a>
+
+        <div className='chat-message__time'>
+          {secondsToHms(createdAt)}
         </div>
       </div>
     )

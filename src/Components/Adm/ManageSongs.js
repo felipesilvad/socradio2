@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { query, collection, onSnapshot, doc} from 'firebase/firestore';
+import { query, collection, onSnapshot, doc, where} from 'firebase/firestore';
 import {firestore} from '../../firebase';
-import {Table, Image} from 'react-bootstrap';
+import {Table, Image, Form, Button} from 'react-bootstrap';
 import Select from 'react-select'
+import { BsSendFill } from 'react-icons/bs';
 
 function ManageSongs() {
   const [playlist, setPlaylist] = useState([])
@@ -13,21 +14,24 @@ function ManageSongs() {
     });
   }, [])
 
-  const getPlaylistSongs = (playlistID) => {
-    var playlistSongs = []
-    onSnapshot(doc(firestore, "/playlist/", playlistID), (doc) => {
-      playlistSongs = doc.data().songs
-    });
-    return playlistSongs
-  }
+  // const getPlaylistSongs = (playlistID) => {
+  //   var playlistSongs = []
+  //   onSnapshot(doc(firestore, "/playlist/", playlistID), (doc) => {
+  //     playlistSongs = doc.data().songs
+  //   });
+  //   return playlistSongs
+  // }
 
   const [songs, setSongs] = useState([])
-  
-  useEffect (() => {
-    onSnapshot(query(collection(firestore, `/songs`)), (snapshot) => {
+  const [search, setSearch] = useState([])
+  const [updateDefaultValues, setUpdateDefaultValues] = useState(false)
+
+  const getSongs = () => {
+    setSongs([])
+    onSnapshot(query(collection(firestore, `/songs`), where("title", "==", search)), (snapshot) => {
       setSongs(snapshot.docs.map(doc => ({...doc.data(), id: doc.id})))
     });
-  }, [])
+  }
 
   const customStyles = {
     option: provided => ({
@@ -53,6 +57,10 @@ function ManageSongs() {
   return (
     <div className='playlist-display'>
       <h3 className='ardela text-center'>Songs</h3>
+      <Form.Control maxlength="200" onChange={(e) => setSearch(e.target.value)} placeholder="Search" />
+      <Button onClick={getSongs} className='send-btn'>
+        <BsSendFill className='mb-1' />
+      </Button>
       <Table striped bordered hover variant="dark">
         <thead>
           <tr>
@@ -64,7 +72,7 @@ function ManageSongs() {
           </tr>
         </thead>
         <tbody>
-          {songs.map((song) => (
+          {songs&&(songs.map((song) => (
             <tr>
               <td className='p-0'><Image src={song.cover} className="list-cover-img" /></td>
               <td className='list-txt'>{song.title}</td>
@@ -81,7 +89,7 @@ function ManageSongs() {
                 />
               </td>
             </tr>
-          ))}
+          )))}
         </tbody>
       </Table>
       

@@ -5,11 +5,10 @@ import { useCollectionData } from 'react-firebase-hooks/firestore';
 import firebase from 'firebase/compat/app';
 import {Button,Form} from 'react-bootstrap';
 import { BsSendFill } from 'react-icons/bs';
+import MessageLoad from './MessageLoad';
 
-function ChatRoom({user,rate}) {
+function ChatRoom({user,rate,station}) {
   const now = new Date()
-
-  const dummy = useRef();
   const messagesRef = firestore.collection('messages');
 
   // const query = messagesRef.orderBy('createdAt');
@@ -19,11 +18,23 @@ function ChatRoom({user,rate}) {
 
   const [formValue, setFormValue] = useState('');
 
+  const chatScrool = () => {
+    var objDiv = document.getElementById("chat-messages-div");
+    objDiv.scrollTop = objDiv.scrollHeight;
+  }
+
   useEffect (() => {
-    dummy.current.scrollIntoView({ behavior: 'smooth' });
-  }, [messages])
+    chatScrool()
+  }, [])
+
+  useEffect (() => {
+    chatScrool()
+  }, [station])
+
+  const [loading, setLoading] = useState(false);
 
   const sendMessage = async (e) => {
+    setLoading(true)
     e.preventDefault();
 
     const { uid } = auth.currentUser;
@@ -40,7 +51,8 @@ function ChatRoom({user,rate}) {
     }
 
     setFormValue('');
-    dummy.current.scrollIntoView({ behavior: 'smooth' });
+    setLoading(false)
+    chatScrool()
   }
 
   function compare( a, b ) {
@@ -55,22 +67,28 @@ function ChatRoom({user,rate}) {
   
   return (
     <div>
-      <div className='chat-messages-div'>
+      <div className='chat-messages-div' id='chat-messages-div'>
         <div>
           {messages && messages
           .filter((msg) => (msg.createdAt&&(msg.createdAt.seconds*1000)) >= now-100000000)
           .sort(compare)
-          .map(msg => <ChatMessage key={msg.id} message={msg} bot={msg.bot} />)}
-          <span ref={dummy}></span>
+          .map(msg => <ChatMessage key={msg.id} message={msg} createdAt={msg.createdAt} bot={msg.bot} />)}
         </div>
       </div>
       {user ? (
         <Form onSubmit={sendMessage} className='send-message'>
-        <Form.Control maxlength="200" value={formValue} onChange={(e) => setFormValue(e.target.value)} placeholder="Send a message" />
-        <Button type="submit" className='send-btn' disabled={!formValue}>
-          <BsSendFill className='mb-1' />
-        </Button>
-      </Form>
+          {loading?(
+            <MessageLoad />
+          ) : (
+            <>
+              <Form.Control maxlength="200" value={formValue} onChange={(e) => setFormValue(e.target.value)} placeholder="Send a message" />
+              <Button type="submit" className='send-btn' disabled={!formValue}>
+                <BsSendFill className='mb-1' />
+              </Button>
+            </>
+          )}
+          
+        </Form>
       ):(
         <div className='sign-to-message'>
           <Form.Control disabled placeholder="You need to Sign In to send messages" />

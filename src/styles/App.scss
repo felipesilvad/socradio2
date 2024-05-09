@@ -44,7 +44,6 @@ body {
     top: 0%;
     left: 0%;
     width: 100%;
-    height: 6%;
     min-height: 50px;
   }
 }
@@ -166,7 +165,7 @@ main {
     top: 6%;
     left: 80%;
     width: 20%;
-    height: 90%;
+    height: 89%;
     padding-top: 0.75rem
   }
 }
@@ -215,6 +214,15 @@ button:disabled {
   transition: 200ms;
 }
 
+.footer-btn {
+  background-color: #282c34!important;
+  border-radius: 0.25rem!important;
+  border: solid 0.1rem $highlight!important;
+  transition: 200ms;
+  padding: 0!important;
+  height: 100%;
+}
+
 .sign-in-btn:hover {
   background-color: $highlight!important;
   border-radius: 0.25rem!important;
@@ -236,6 +244,7 @@ ul, li {
 .message-text{
   color: white;
   text-decoration: none;
+  word-break: break-all;
 }
 
 .profile-img {
@@ -514,6 +523,9 @@ input {
   }
 }
 
+.negative-margin-station {
+  margin-top: -0.27rem;
+}
 
 .station-link-border {
   border-radius: 0.25rem;
@@ -1204,4 +1216,11 @@ $thumb-size: 16px;
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.chat-message__time {
+  color: gray;
+  font-size: 0.8rem;
+  text-align: end;
+  margin-top: 0.2rem;
 }

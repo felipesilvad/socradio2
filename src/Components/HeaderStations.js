@@ -1,22 +1,21 @@
-import React, {useEffect, useState} from 'react';
-import SignIn from './Accounts/SignIn';
+import React from 'react';
 import Nav from 'react-bootstrap/Nav';
 import { FaLock } from "react-icons/fa";
-import {Container, OverlayTrigger, Tooltip} from 'react-bootstrap';
+import {OverlayTrigger, Tooltip} from 'react-bootstrap';
 
 function HeaderStations({userData, eventImg, eventTitle}) {
 
   const privateStationTooltip = () => {
     return (
       <Tooltip id="tooltip">
-        Private Station for Subscribers only
+        Private Station for Donators only
       </Tooltip>
     )
   }
 
   return (
     <Nav className="me-auto stations-m">
-      <Nav.Link className='station-link d-flex' style={{backgroundImage: `url(https://firebasestorage.googleapis.com/v0/b/soc-radio-f3953.appspot.com/o/mix%2Fmix1.jpg?alt=media&token=c5d8c87e-caea-482b-b89e-f74649ee5d9e)`}} href="/">
+      <Nav.Link className='station-link d-flex negative-margin-station' style={{backgroundImage: `url(https://firebasestorage.googleapis.com/v0/b/soc-radio-f3953.appspot.com/o/mix%2Fmix1.jpg?alt=media&token=c5d8c87e-caea-482b-b89e-f74649ee5d9e)`}} href="/">
         <div className='station-link-border justify-content-center align-self-center'>
           <div className='station-link__div d-flex h-100'>
             <div className='station-link d-flex h-100'>
@@ -25,7 +24,7 @@ function HeaderStations({userData, eventImg, eventTitle}) {
           </div>
         </div>
       </Nav.Link>
-      <Nav.Link className='station-link d-flex' style={{backgroundImage: `url(https://firebasestorage.googleapis.com/v0/b/soc-radio-f3953.appspot.com/o/chill%2FChill1.jpg?alt=media&token=cedc74d7-7e50-4baf-93ed-8cd2ac3aa254)`}} href="/chill">
+      <Nav.Link className='station-link d-flex negative-margin-station' style={{backgroundImage: `url(https://firebasestorage.googleapis.com/v0/b/soc-radio-f3953.appspot.com/o/chill%2FChill1.jpg?alt=media&token=cedc74d7-7e50-4baf-93ed-8cd2ac3aa254)`}} href="/chill">
         <div className='station-link-border justify-content-center align-self-center'>
           <div className='station-link__div d-flex h-100'>
             <div className='station-link d-flex h-100'>
@@ -34,7 +33,7 @@ function HeaderStations({userData, eventImg, eventTitle}) {
           </div>
         </div>
       </Nav.Link>
-      <Nav.Link className='station-link d-flex' style={{backgroundImage: `url(${eventImg})`}} href="/event">
+      <Nav.Link className='station-link d-flex negative-margin-station' style={{backgroundImage: `url(${eventImg})`}} href="/event">
         <div className='station-link-border justify-content-center align-self-center'>
           <div className='station-link__div d-flex h-100'>
             <div  className='mtsrt station-txt h-100 w-100'>
@@ -49,7 +48,7 @@ function HeaderStations({userData, eventImg, eventTitle}) {
         </div>
       </Nav.Link>
       {userData&&(userData.roles.includes('Donator')||userData.roles.includes('Admin'))?(
-        <Nav.Link className='station-link d-flex'  href="/private">
+        <Nav.Link className='station-link d-flex negative-margin-station'  href="/private">
           <div className='station-link-border justify-content-center align-self-center'>
             <div className='station-link__div d-flex h-100'>
               <div className='station-link d-flex h-100'>

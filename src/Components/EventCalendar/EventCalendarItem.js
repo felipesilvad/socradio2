@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { query, collection, onSnapshot, doc} from 'firebase/firestore';
+import {onSnapshot, doc} from 'firebase/firestore';
 import {firestore} from '../../firebase';
-import {Table, Image} from 'react-bootstrap';
 
 function EventCalendarItem({event, startTime, endTime, isPreviusDayEvent}) {
   const [playlist, setPlaylist] = useState()

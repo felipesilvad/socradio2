@@ -1,6 +1,5 @@
 import React from 'react';
 import {Image} from 'react-bootstrap';
-import Select from 'react-select'
 
 function PlaylistSong({song, index, setCurrentSongIndex, currentSongIndex}) {
 
