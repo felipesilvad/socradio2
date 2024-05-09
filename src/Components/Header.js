@@ -7,7 +7,6 @@ import {firestore} from '../firebase';
 import {query, collection, onSnapshot, doc, orderBy, where, getDoc} from 'firebase/firestore';
 import { TbCalendarTime } from "react-icons/tb";
 import { Link } from 'react-router-dom';
-import Clock from "react-live-clock";
 import { FiGift } from "react-icons/fi";
 import HeaderStations from "./HeaderStations"
 import { FaCaretDown } from "react-icons/fa";

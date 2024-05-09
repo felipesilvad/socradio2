@@ -1,6 +1,4 @@
 import React from 'react';
-import {Image} from 'react-bootstrap';
-import Select from 'react-select'
 import PlaylistSong from './PlaylistSong';
 import PlaylistSelector from './PlaylistSelector';
 

@@ -1,7 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { query, collection, onSnapshot, doc} from 'firebase/firestore';
-import {firestore} from '../../firebase';
-import {Table, Image} from 'react-bootstrap';
+import React from 'react';
+import {Table} from 'react-bootstrap';
 import EventCalendarDay from './EventCalendarDay';
 
 function EventCalendar({events}) {

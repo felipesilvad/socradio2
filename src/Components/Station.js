@@ -110,7 +110,7 @@ function StationComponent({user,station}) {
     <>
       <AudioPlayerComponent playlist={playlist} currentSongIndex={currentSongIndex} updateRating={updateRating} setCurrentSongFromDB={setCurrentSongFromDB}
       audioRef={audioRef} user={user} onEndedSong={onEndedSong} currentTime={currentTime} setCurrentTime={setCurrentTime} />
-      <ChatRoom user={user} rate={rate} />
+      <ChatRoom user={user} rate={rate} station={station} />
       <Footer />
     </>
   );
