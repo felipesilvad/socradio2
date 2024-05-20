@@ -80,12 +80,16 @@ function StationComponent({user,station}) {
 
   // BOT MESSAGE 
 
-  const sendBotMessage = (txt) => {
+  const sendBotMessage = (txt, rating, uid, song_title, song_cover) => {
     firestore.collection('messages').add({
       text: txt,
       createdAt: firebase.firestore.FieldValue.serverTimestamp(),
       bot: true,
-      uid: "Abr91NqhIRagi2UygmUZpehKnM52"
+      uid: "Abr91NqhIRagi2UygmUZpehKnM52",
+      rating: rating,
+      rating_uid: uid,
+      song_title: song_title,
+      song_cover: song_cover,
     })
   }
 
@@ -95,12 +99,13 @@ function StationComponent({user,station}) {
   const [updateRating, setUpdateRating] = useState(false);
 
 
-  const rate = (newRating) => {
+  const rate = (newRating, uid) => {
     if (newRating > 0 && newRating < 6) {
       ratingsRef.doc(playlist[currentSongIndex].id).collection("ratings").doc(user.uid).set({
         ratings: newRating,
       }, {merge: true})
       setUpdateRating(!updateRating)
+      sendBotMessage(`Rated`,newRating,uid,playlist[currentSongIndex].title,playlist[currentSongIndex].cover)
     } else {
       sendBotMessage("Rating needs to be between 0 and 5")
     }

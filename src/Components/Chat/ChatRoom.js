@@ -47,7 +47,7 @@ function ChatRoom({user,rate,station}) {
 
     if (formValue.startsWith("!rate")) {
       const value = formValue.split("!rate")[1]
-      rate(parseInt(value))
+      rate(parseInt(value), uid)
     }
 
     setFormValue('');
