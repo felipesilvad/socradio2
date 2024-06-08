@@ -1227,3 +1227,29 @@ $thumb-size: 16px;
 .rate-cover-img {
   width: 2.6rem;
 }
+
+.week-arrow-icon {
+  width: 2.5rem;
+  height: 5rem;
+  text-shadow: 4px 4px 2px rgba(0,0,0,0.6);
+}
+
+.week-arrow-icon i {
+  text-shadow: 4px 4px 2px rgba(0,0,0,0.6);
+}
+
+.week-arrow-r {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  cursor: pointer;
+  padding: 0.25rem;
+}
+
+.week-arrow-l {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  cursor: pointer;
+  padding: 0.25rem;
+}
