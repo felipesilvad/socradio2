@@ -5,7 +5,7 @@ import { IoIosArrowBack } from "react-icons/io";
 import { IoIosArrowForward } from "react-icons/io";
 
 function EventCalendar({events}) {
-  var curr = new Date; // get current date
+  var curr = new Date(); // get current date
   var first = curr.getDate() - curr.getDay(); // First day is the day of the month - the day of the week
 
   const [nextWeek, setNextWeek] = useState(0)
@@ -38,7 +38,7 @@ function EventCalendar({events}) {
     return (
       <div className='d-flex'>
 
-        {(nextWeek!=0)&&(
+        {(nextWeek!==0)&&(
           <OverlayTrigger placement="right" overlay={tooltip("Previous Week")}>
             <div className='week-arrow-l' onClick={() => setNextWeek(0)}>
               <IoIosArrowBack className='week-arrow-icon' />
