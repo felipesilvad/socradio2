@@ -167,7 +167,7 @@ function AudioPlayer({
         </Col>
         <Col className="px-1">
           <ProgressBar min="0" now={currentTime} max={duration} style={barColor} />
-          <div className="d-flex justify-content-between w-100">
+          <div className="d-flex justify-content-between w-100 timestamps_txt">
             <div className="mtsrt">{formatDuration(currentTime)}</div>
             <div className="mtsrt">{formatDuration(duration)}</div>
           </div>

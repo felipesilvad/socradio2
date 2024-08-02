@@ -14,6 +14,27 @@ body {
   max-height: 90vh;
 }
 
+h1 {
+  @media only screen and (min-width: $lg) {
+    font-size: 1.5rem!important;
+  }
+  font-size: 1.2rem!important;
+}
+
+h2 {
+  @media only screen and (min-width: $lg) {
+    font-size: 1.2rem!important;
+  }
+  font-size: 1rem!important;
+}
+
+h4 {
+  @media only screen and (min-width: $lg) {
+    font-size: 1rem!important;
+  }
+  font-size: 0.75rem!important;
+}
+
 .mtsrt {
   font-family: 'Montserrat', sans-serif;
   font-weight: 600;
@@ -412,6 +433,13 @@ input {
     width: 20%;
   }
 }
+
+.timestamps_txt {
+  @media only screen and (min-width: $lg) {
+    font-size: 0.75rem;
+  }
+}
+
 
 .sign-to-message{
   z-index: 4;

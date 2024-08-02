@@ -5,18 +5,40 @@ import { IoIosArrowBack } from "react-icons/io";
 import { IoIosArrowForward } from "react-icons/io";
 
 function EventCalendar({events}) {
-  var curr = new Date(); // get current date
-  var first = curr.getDate() - curr.getDay(); // First day is the day of the month - the day of the week
-
+  var curr = new Date().toDateString();
   const [nextWeek, setNextWeek] = useState(0)
 
-  var sunday = new Date(curr.setDate(first + nextWeek));
-  var monday = new Date(curr.setDate(first + nextWeek + 1));
-  var tuesday = new Date(curr.setDate(first + nextWeek + 2));
-  var wednesday = new Date(curr.setDate(first + nextWeek + 3));
-  var thursday = new Date(curr.setDate(first + nextWeek + 4));
-  var fryday = new Date(curr.setDate(first + nextWeek + 5));
-  var saturday = new Date(curr.setDate(first + nextWeek + 6));
+  // var first = curr.getDate() - curr.getDay(); // First day is the day of the month - the day of the week
+  // var sunday = new Date(curr.setDate(first + nextWeek));
+  // var monday = new Date(curr.setDate(first + nextWeek + 1));
+  // var tuesday = new Date(curr.setDate(first + nextWeek + 2));
+  // var wednesday = new Date(curr.setDate(first + nextWeek + 3));
+  // var thursday = new Date(curr.setDate(first + nextWeek + 4));
+  // var fryday = new Date(curr.setDate(first + nextWeek + 5));
+  // var saturday = new Date(curr.setDate(first + nextWeek + 6));
+
+
+  function dates(current) {
+    var week= new Array(); 
+    // Starting Monday not Sunday
+    current.setDate((current.getDate() - current.getDay() + 1 + nextWeek));
+    for (var i = 0; i < 7; i++) {
+        week.push(
+            new Date(current)
+        ); 
+        current.setDate(current.getDate() +1);
+    }
+    return week; 
+  }
+  
+
+  var sunday = dates(new Date(curr))[0]
+  var monday = dates(new Date(curr))[1]
+  var tuesday = dates(new Date(curr))[2]
+  var wednesday = dates(new Date(curr))[3]
+  var thursday = dates(new Date(curr))[4]
+  var fryday = dates(new Date(curr))[5]
+  var saturday = dates(new Date(curr))[6]
 
   const weekTooltip = (txt) => {
     return (
