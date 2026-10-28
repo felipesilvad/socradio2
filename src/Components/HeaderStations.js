@@ -15,11 +15,63 @@ function HeaderStations({userData, eventImg, eventTitle}) {
 
   return (
     <Nav className="me-auto stations-m">
+      {/* Global Synchronized Stations */}
+      <Nav.Link className='station-link d-flex negative-margin-station' style={{backgroundImage: `linear-gradient(45deg, #007bff, #28a745)`}} href="/global">
+        <div className='station-link-border justify-content-center align-self-center'>
+          <div className='station-link__div d-flex h-100'>
+            <div className='station-link d-flex h-100'>
+              <div className='station-txt station-txt-main mtsrt justify-content-center align-self-center'>
+                <span style={{fontSize: '0.8em', fontWeight: 'bold'}}>🎵 SYNC</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </Nav.Link>
+      
+      <Nav.Link className='station-link d-flex negative-margin-station' style={{backgroundImage: `url(https://picsum.photos/300/150?random=global-main)`}} href="/global/main">
+        <div className='station-link-border justify-content-center align-self-center'>
+          <div className='station-link__div d-flex h-100'>
+            <div className='station-link d-flex h-100'>
+              <div className='station-txt station-txt-main mtsrt justify-content-center align-self-center'>
+                <span style={{fontSize: '0.7em'}}>Global Mix</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </Nav.Link>
+      
+      <Nav.Link className='station-link d-flex negative-margin-station' style={{backgroundImage: `url(https://picsum.photos/300/150?random=global-chill)`}} href="/global/chill">
+        <div className='station-link-border justify-content-center align-self-center'>
+          <div className='station-link__div d-flex h-100'>
+            <div className='station-link d-flex h-100'>
+              <div className='station-txt station-txt-main mtsrt justify-content-center align-self-center'>
+                <span style={{fontSize: '0.7em'}}>Global Chill</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </Nav.Link>
+      
+      <Nav.Link className='station-link d-flex negative-margin-station' style={{backgroundImage: `url(https://picsum.photos/300/150?random=global-rock)`}} href="/global/rock">
+        <div className='station-link-border justify-content-center align-self-center'>
+          <div className='station-link__div d-flex h-100'>
+            <div className='station-link d-flex h-100'>
+              <div className='station-txt station-txt-main mtsrt justify-content-center align-self-center'>
+                <span style={{fontSize: '0.7em'}}>Global Rock</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </Nav.Link>
+
+      {/* Legacy Stations (for comparison) */}
       <Nav.Link className='station-link d-flex negative-margin-station' style={{backgroundImage: `url(https://firebasestorage.googleapis.com/v0/b/soc-radio-f3953.appspot.com/o/mix%2Fmix1.jpg?alt=media&token=c5d8c87e-caea-482b-b89e-f74649ee5d9e)`}} href="/">
         <div className='station-link-border justify-content-center align-self-center'>
           <div className='station-link__div d-flex h-100'>
             <div className='station-link d-flex h-100'>
-              <div className='station-txt station-txt-main mtsrt justify-content-center align-self-center'>Mix</div>
+              <div className='station-txt station-txt-main mtsrt justify-content-center align-self-center'>
+                <span style={{fontSize: '0.7em'}}>Mix (Old)</span>
+              </div>
             </div>
           </div>
         </div>
@@ -28,7 +80,9 @@ function HeaderStations({userData, eventImg, eventTitle}) {
         <div className='station-link-border justify-content-center align-self-center'>
           <div className='station-link__div d-flex h-100'>
             <div className='station-link d-flex h-100'>
-              <div className='station-txt station-txt-main mtsrt justify-content-center align-self-center'>Chill</div>
+              <div className='station-txt station-txt-main mtsrt justify-content-center align-self-center'>
+                <span style={{fontSize: '0.7em'}}>Chill (Old)</span>
+              </div>
             </div>
           </div>
         </div>

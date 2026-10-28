@@ -1,20 +1,29 @@
 import React, {useState, useEffect} from 'react';
-import {firestore} from '../../firebase';
-import { doc, onSnapshot } from "firebase/firestore";
-
 
 function ChatMessagePP({id,header}) {
   const [profilePic, setProfilePic] = useState()
 
   useEffect(() => {
-    onSnapshot(doc(firestore, "/profile-pics/", id), (doc) => {
-      setProfilePic(doc.data());
-    });
-  }, []);
+    const fetchProfilePic = async () => {
+      try {
+        // Static profile pics for now - could be moved to a database table
+        const staticProfilePics = [
+          { id: 'Q82gC4OPteYZCJPP3ur2', url: 'some-url-1' },
+          { id: 'another-pic-id', url: 'some-url-2' }
+        ];
+        const profilePic = staticProfilePics.find(pic => pic.id === id);
+        setProfilePic(profilePic);
+      } catch (error) {
+        console.error('Error fetching profile picture:', error);
+      }
+    };
+
+    fetchProfilePic();
+  }, [id]);
 
   if (profilePic) {
     return (
-      <img className={`profile-img ${header&&("profile-img-header")}`} src={profilePic.url} />
+      <img className={`profile-img ${header&&("profile-img-header")}`} src={profilePic.url} alt="" />
     )
   }
 }

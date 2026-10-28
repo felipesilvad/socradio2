@@ -1,9 +1,7 @@
 import React, {useRef, useState, useEffect} from 'react';
 import ChatRoom from './Chat/ChatRoom';
 import AudioPlayerComponent from './AudioPlayer/AudioPlayerComponent';
-import {firestore} from '../firebase';
-import { doc, onSnapshot, getDoc, collection} from "firebase/firestore";
-import firebase from 'firebase/compat/app';
+import {db, subscriptions} from '../supabase';
 import Footer from './Footer'
 
 function StationComponent({user,station}) {
@@ -23,19 +21,19 @@ function StationComponent({user,station}) {
   };
 
   const setCurrentSongFromDB = async () => {
-    // onSnapshot(doc(firestore, `/${station}/currentSong`), (doc) => {
-    //   setCurrentSongIndex(doc.data().currentSong.index)
-    //   const now = new Date().getTime()
-    //   const seconds = now / 1000
-    //   handleSeek(seconds-doc.data().currentSong.startTime)
-    // });
-    getDoc(doc(collection(firestore, station), "currentSong"))
-    .then(doc => {
-      setCurrentSongIndex(doc.data().currentSong.index)
-      const now = new Date().getTime()
-      const seconds = now / 1000
-      handleSeek(seconds-doc.data().currentSong.startTime)
-    })
+    try {
+      const stationData = await db.getStation(station);
+      if (stationData) {
+        setCurrentSongIndex(stationData.current_song_index);
+        const now = new Date().getTime();
+        const seconds = now / 1000;
+        if (stationData.current_song_start_time) {
+          handleSeek(seconds - new Date(stationData.current_song_start_time).getTime() / 1000);
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching current song:', error);
+    }
   }
 
   // const setCurrentSongFromAPI = async () => {
@@ -65,9 +63,15 @@ function StationComponent({user,station}) {
   // }
 
   const setPlaylistSongFromDB = async () => {
-    onSnapshot(doc(firestore, `/${station}/currentPlaylist`), (doc) => {
-      setPlaylist(doc.data().currentPlaylist)
-    });
+    try {
+      const stationData = await db.getStation(station);
+      if (stationData && stationData.current_playlist_id) {
+        const playlistSongs = await db.getSongs({ playlist: stationData.current_playlist_id });
+        setPlaylist(playlistSongs);
+      }
+    } catch (error) {
+      console.error('Error fetching playlist:', error);
+    }
   }
 
   useEffect(() => {
@@ -81,33 +85,35 @@ function StationComponent({user,station}) {
   // BOT MESSAGE 
 
   const sendBotMessage = (txt, rating, uid, song_title, song_cover) => {
-    firestore.collection('messages').add({
+    db.addMessage({
       text: txt,
-      createdAt: firebase.firestore.FieldValue.serverTimestamp(),
       bot: true,
       uid: "Abr91NqhIRagi2UygmUZpehKnM52",
       rating: rating,
       rating_uid: uid,
       song_title: song_title,
       song_cover: song_cover,
-    })
+    }).catch(error => {
+      console.error('Error sending bot message:', error);
+    });
   }
 
   // RATINGS
 
-  const ratingsRef = firestore.collection('ratings');
   const [updateRating, setUpdateRating] = useState(false);
-
 
   const rate = (newRating, uid) => {
     if (newRating > 0 && newRating < 6) {
-      ratingsRef.doc(playlist[currentSongIndex].id).collection("ratings").doc(user.uid).set({
-        ratings: newRating,
-      }, {merge: true})
-      setUpdateRating(!updateRating)
-      sendBotMessage(`Rated`,newRating,uid,playlist[currentSongIndex].title,playlist[currentSongIndex].cover)
+      db.addRating(playlist[currentSongIndex].id, user.uid, newRating)
+        .then(() => {
+          setUpdateRating(!updateRating);
+          sendBotMessage(`Rated`, newRating, uid, playlist[currentSongIndex].title, playlist[currentSongIndex].cover);
+        })
+        .catch(error => {
+          console.error('Error adding rating:', error);
+        });
     } else {
-      sendBotMessage("Rating needs to be between 0 and 5")
+      sendBotMessage("Rating needs to be between 0 and 5");
     }
   };
 

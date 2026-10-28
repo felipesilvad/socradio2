@@ -1,9 +1,7 @@
 import React, {useRef, useState, useEffect} from 'react';
 import ChatRoom from './Chat/ChatRoom';
 import AudioPlayerComponent from './AudioPlayer/AudioPlayerComponent';
-import {firestore} from '../firebase';
-import {onSnapshot, query, collection, where, limit} from "firebase/firestore";
-import firebase from 'firebase/compat/app';
+import {db, subscriptions} from '../supabase';
 import PlaylistComponent from './Playlist/PlaylistComponent';
 import Footer from './Footer'
 
@@ -34,19 +32,31 @@ function DonatorStation({user,station}) {
 
   const setPlaylistSongFromDB = async (e) => {
     if (e) {
-      onSnapshot(query(collection(firestore, `/songs`), where("playlists", "array-contains", e)), (snapshot) => {
-        setPlaylist(snapshot.docs.map(doc => ({...doc.data(), id: doc.id})))
-      });
+      try {
+        const playlistSongs = await db.getSongs({ playlist: e });
+        setPlaylist(playlistSongs);
+      } catch (error) {
+        console.error('Error fetching playlist songs:', error);
+      }
     }
   }
 
   useEffect(() => {
-    onSnapshot(query(collection(firestore, `/playlist`)), (snapshot) => {
-      setPlaylistList(snapshot.docs.map(doc => ({...doc.data(), id: doc.id})))
-    });
-    onSnapshot(query(collection(firestore, `/songs`), where("main", "==", true), limit(100)), (snapshot) => {
-      setPlaylist(snapshot.docs.map(doc => ({...doc.data(), id: doc.id})))
-    });
+    const fetchData = async () => {
+      try {
+        // Fetch playlists
+        const playlistData = await db.getPlaylists();
+        setPlaylistList(playlistData);
+        
+        // Fetch main songs
+        const mainSongs = await db.getSongs({ main: true, limit: 100 });
+        setPlaylist(mainSongs);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
   }, [])
 
   useEffect(() => {
@@ -56,28 +66,30 @@ function DonatorStation({user,station}) {
   // BOT MESSAGE 
 
   const sendBotMessage = (txt) => {
-    firestore.collection('messages').add({
+    db.addMessage({
       text: txt,
-      createdAt: firebase.firestore.FieldValue.serverTimestamp(),
       bot: true,
       uid: "Abr91NqhIRagi2UygmUZpehKnM52"
-    })
+    }).catch(error => {
+      console.error('Error sending bot message:', error);
+    });
   }
 
   // RATINGS
 
-  const ratingsRef = firestore.collection('ratings');
   const [updateRating, setUpdateRating] = useState(false);
-
 
   const rate = (newRating) => {
     if (newRating > 0 && newRating < 6) {
-      ratingsRef.doc(playlist[currentSongIndex].id).collection("ratings").doc(user.uid).set({
-        ratings: newRating,
-      }, {merge: true})
-      setUpdateRating(!updateRating)
+      db.addRating(playlist[currentSongIndex].id, user.uid, newRating)
+        .then(() => {
+          setUpdateRating(!updateRating);
+        })
+        .catch(error => {
+          console.error('Error adding rating:', error);
+        });
     } else {
-      sendBotMessage("Rating needs to be between 0 and 5")
+      sendBotMessage("Rating needs to be between 0 and 5");
     }
   };
 
@@ -86,18 +98,21 @@ function DonatorStation({user,station}) {
   const [minFilter, setMinFilter] = useState(1);
   const [maxFilter, setMaxFilter] = useState(5);
 
-
   const changeRangeFilter = (e) => {
     setMinFilter(e[0])
     setMaxFilter(e[1])
     if (!currentPlaylist) {
       if (minFilter > 3) {
-        onSnapshot(query(collection(firestore, `/songs`), where("lv", ">=", minFilter), limit(100)), (snapshot) => {
-          setPlaylist(snapshot.docs.map(doc => ({...doc.data(), id: doc.id})))
+        db.getSongs({ lv_min: minFilter, limit: 100 }).then(songs => {
+          setPlaylist(songs);
+        }).catch(error => {
+          console.error('Error filtering songs by min level:', error);
         });
       } else {   
-        onSnapshot(query(collection(firestore, `/songs`), where("lv", "<=", maxFilter), limit(100)), (snapshot) => {
-          setPlaylist(snapshot.docs.map(doc => ({...doc.data(), id: doc.id})))
+        db.getSongs({ lv_max: maxFilter, limit: 100 }).then(songs => {
+          setPlaylist(songs);
+        }).catch(error => {
+          console.error('Error filtering songs by max level:', error);
         });
       }
     }

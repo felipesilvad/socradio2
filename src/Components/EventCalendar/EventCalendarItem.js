@@ -1,13 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import {onSnapshot, doc} from 'firebase/firestore';
-import {firestore} from '../../firebase';
+import { db } from '../../supabase';
 
 function EventCalendarItem({event, startTime, endTime, isPreviusDayEvent}) {
   const [playlist, setPlaylist] = useState()
   useEffect(() => {
-    onSnapshot(doc(firestore, "/playlist/", event.playlist), (doc) => {
-      setPlaylist(doc.data());
-    });
+    const fetchPlaylist = async () => {
+      try {
+        const data = await db.getPlaylists();
+        const playlist = data.find(p => p.id === event.playlist);
+        setPlaylist(playlist);
+      } catch (error) {
+        console.error('Error fetching playlist:', error);
+      }
+    };
+
+    fetchPlaylist();
   }, [event]);
 
   const getEventHeight = () => {

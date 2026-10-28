@@ -1,22 +1,15 @@
 import React, { useRef, useState,useEffect } from 'react';
-import { auth, firestore} from '../../firebase';
+import { auth, db, subscriptions } from '../../supabase';
 import ChatMessage from './ChatMessage';
-import { useCollectionData } from 'react-firebase-hooks/firestore';
-import firebase from 'firebase/compat/app';
 import {Button,Form} from 'react-bootstrap';
 import { BsSendFill } from 'react-icons/bs';
 import MessageLoad from './MessageLoad';
 
 function ChatRoom({user,rate,station}) {
   const now = new Date()
-  const messagesRef = firestore.collection('messages');
-
-  // const query = messagesRef.orderBy('createdAt');
-  const query = messagesRef.orderBy('createdAt', "desc").limit(15);
-
-  const [messages] = useCollectionData(query, { idField: 'id' });
-
+  const [messages, setMessages] = useState([]);
   const [formValue, setFormValue] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const chatScrool = () => {
     var objDiv = document.getElementById("chat-messages-div");
@@ -31,35 +24,67 @@ function ChatRoom({user,rate,station}) {
     chatScrool()
   }, [station])
 
-  const [loading, setLoading] = useState(false);
+  useEffect(() => {
+    // Fetch initial messages
+    const fetchMessages = async () => {
+      try {
+        const messageData = await db.getMessages(15);
+        setMessages(messageData);
+      } catch (error) {
+        console.error('Error fetching messages:', error);
+      }
+    };
+
+    fetchMessages();
+
+    // Subscribe to new messages
+    const messageSubscription = subscriptions.subscribeToMessages((payload) => {
+      if (payload.eventType === 'INSERT') {
+        setMessages(prev => [payload.new, ...prev].slice(0, 15));
+      }
+    });
+
+    return () => {
+      messageSubscription.unsubscribe();
+    };
+  }, []);
 
   const sendMessage = async (e) => {
-    setLoading(true)
+    setLoading(true);
     e.preventDefault();
 
-    const { uid } = auth.currentUser;
-
-    await messagesRef.add({
-      text: formValue,
-      createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-      uid,
-    })
-
-    if (formValue.startsWith("!rate")) {
-      const value = formValue.split("!rate")[1]
-      rate(parseInt(value), uid)
+    const { user: currentUser } = await auth.currentUser();
+    
+    if (!currentUser) {
+      setLoading(false);
+      return;
     }
 
-    setFormValue('');
-    setLoading(false)
-    chatScrool()
+    try {
+      await db.addMessage({
+        text: formValue,
+        uid: currentUser.id,
+      });
+
+      if (formValue.startsWith("!rate")) {
+        const value = formValue.split("!rate")[1];
+        rate(parseInt(value), currentUser.id);
+      }
+
+      setFormValue('');
+      chatScrool();
+    } catch (error) {
+      console.error('Error sending message:', error);
+    } finally {
+      setLoading(false);
+    }
   }
 
   function compare( a, b ) {
-    if ( a.createdAt< b.createdAt){
+    if ( new Date(a.createdAt) < new Date(b.createdAt)){
       return -1;
     }
-    if ( a.createdAt> b.createdAt){
+    if ( new Date(a.createdAt) > new Date(b.createdAt)){
       return 1;
     }
     return 0;
@@ -70,7 +95,7 @@ function ChatRoom({user,rate,station}) {
       <div className='chat-messages-div' id='chat-messages-div'>
         <div>
           {messages && messages
-          .filter((msg) => (msg.createdAt&&(msg.createdAt.seconds*1000)) >= now-100000000)
+          .filter((msg) => (msg.createdAt && (new Date(msg.createdAt).getTime())) >= now-100000000)
           .sort(compare)
           .map(msg => <ChatMessage key={msg.id} message={msg} createdAt={msg.createdAt} bot={msg.bot} />)}
         </div>

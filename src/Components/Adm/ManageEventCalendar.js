@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { query, collection, onSnapshot, doc, orderBy, where, getDocs} from 'firebase/firestore';
-import {firestore} from '../../firebase';
+import { db, subscriptions } from '../../supabase';
 import {Row, Col, Button, Form} from 'react-bootstrap';
 import Select from 'react-select'
 import EventCalendar from '../EventCalendar/EventCalendar';
@@ -12,23 +11,59 @@ function ManageEventCalendar({user}) {
   const [events, setEvents] = useState([])
 
   useEffect (() => {
-    onSnapshot(query(collection(firestore, `/playlist`)), (snapshot) => {
-      setPlaylists(snapshot.docs.map(doc => ({value: doc.id, label: doc.data().title})))
-    });
-    onSnapshot(query(collection(firestore, `/eventCalendar`), orderBy('startTime')), (snapshot) => {
-      setEvents(snapshot.docs.map(doc => ({...doc.data(), id: doc.id})))
-    });
+    const fetchData = async () => {
+      try {
+        // Fetch playlists
+        const playlistData = await db.getPlaylists();
+        setPlaylists(playlistData.map(p => ({value: p.id, label: p.title})));
+        
+        // Fetch events
+        const eventsData = await db.getEvents();
+        setEvents(eventsData);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
   }, [])
 
   const [userData, setUserData] = useState()
   useEffect(() => {
     if (user) {
-      onSnapshot(doc(firestore, "/users/", user.uid), (doc) => {
-        setUserData(doc.data());
+      // Get initial user data
+      db.getUser(user.uid).then(data => {
+        setUserData(data);
+      }).catch(error => {
+        console.error('Error fetching user data:', error);
       });
+
+      // Subscribe to user data changes
+      const userSubscription = subscriptions.subscribeToUser(user.uid, (payload) => {
+        if (payload.eventType === 'UPDATE') {
+          db.getUser(user.uid).then(data => {
+            setUserData(data);
+          }).catch(error => {
+            console.error('Error fetching updated user data:', error);
+          });
+        }
+      });
+
+      // Subscribe to user roles changes
+      const rolesSubscription = subscriptions.subscribeToUserRoles(user.uid, () => {
+        db.getUser(user.uid).then(data => {
+          setUserData(data);
+        }).catch(error => {
+          console.error('Error fetching updated user roles:', error);
+        });
+      });
+
+      return () => {
+        userSubscription.unsubscribe();
+        rolesSubscription.unsubscribe();
+      };
     }
   }, [user]);
-
 
   const customStyles = {
     option: provided => ({
@@ -54,11 +89,17 @@ function ManageEventCalendar({user}) {
   const [selectedDate, setSelectedDate] = useState(curr)
 
   const addEvent = () => {
-    firestore.collection('eventCalendar').add({
-      playlist: selectedPlaylist,
-      startTime: selectedDate,
-    })
-    console.log('eventAdded')
+    db.addEvent(selectedPlaylist, selectedDate)
+      .then(() => {
+        console.log('eventAdded');
+        // Refresh events
+        db.getEvents().then(eventsData => {
+          setEvents(eventsData);
+        });
+      })
+      .catch(error => {
+        console.error('Error adding event:', error);
+      });
   }
     
   const [color1, setColor1] = useState()
@@ -66,16 +107,12 @@ function ManageEventCalendar({user}) {
 
   const changeColor = async () => {
     if (color1&&color2) {
-      const citiesRef = collection(firestore, "songs");
-      const q = query(citiesRef, where("color", "==", color1));
-      const querySnapshot = await getDocs(q);
-      querySnapshot.forEach((doc) => {
-        console.log(doc.id, " => ", doc.data());
-        firestore.collection('songs').doc(doc.id).set({
-          color: color2,
-        }, {merge: true})
-      });
-      console.log("colors updated")
+      try {
+        await db.updateSongColor(color1, color2);
+        console.log("colors updated");
+      } catch (error) {
+        console.error('Error updating colors:', error);
+      }
     } else {
       console.log("select colors dude")
     }
@@ -84,7 +121,7 @@ function ManageEventCalendar({user}) {
   return (
     <div className='playlist-display'>
       <h3 className='ardela text-center mt-2'>Event Calendar</h3>
-      {userData&&(userData.roles.includes('Admin')&&(
+      {(userData&&(userData.user_roles && userData.user_roles.some(r => r.role === 'Admin'))&&(
         <Row>
           <Col>
             <label>Add Event</label>

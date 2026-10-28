@@ -1,6 +1,5 @@
 import React, {useState,useEffect} from 'react';
-import {firestore} from '../../firebase';
-import { doc, onSnapshot, query, collection, where } from "firebase/firestore";
+import {db, auth} from '../../supabase';
 import {Dropdown,Modal,Button,Image} from 'react-bootstrap';
 import SignOut from './SignOut';
 import ChatMessagePP from '../Chat/ChatMessagePP';
@@ -11,33 +10,56 @@ function AccountHeader({user}) {
 
   const [userData, setUserData] = useState()
   useEffect(() => {
-    onSnapshot(doc(firestore, "/users/", user.uid), (doc) => {
-      setUserData(doc.data());
+    const fetchUserData = async () => {
+      try {
+        const data = await db.getUser(user.id);
+        setUserData(data);
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+      }
+    };
+
+    fetchUserData();
+
+    // Subscribe to user data changes
+    const userSubscription = auth.onAuthStateChange((event, session) => {
+      if (session?.user) {
+        fetchUserData();
+      }
     });
+
+    return () => {
+      if (userSubscription?.subscription) {
+        userSubscription.subscription.unsubscribe();
+      }
+    };
   }, [user]);
 
-  const [profilePics, setProfilePics] = useState('')
-  const [profilePicsUnlocked, setProfilePicsUnlocked] = useState('')
+  const [profilePics, setProfilePics] = useState([])
+  const [profilePicsUnlocked, setProfilePicsUnlocked] = useState([])
 
   const now = new Date().getTime()
 
   useEffect (() => {
-    onSnapshot(query(collection(firestore, `/profile-pics`), where("lv", "==", 2)), (snapshot) => {
-      setProfilePics(snapshot.docs.map(doc => ({...doc.data(), id: doc.id})))
-    });
+    // Static profile pics for now - could be moved to a database table
+    const staticProfilePics = [
+      { id: 'pic1', url: 'some-url-1', startDate: new Date('2024-01-01'), endDate: new Date('2024-12-31') },
+      { id: 'pic2', url: 'some-url-2', startDate: new Date('2024-06-01'), endDate: new Date('2024-12-31') }
+    ];
+    setProfilePics(staticProfilePics);
   }, [])
 
   useEffect (() => {
-    if (profilePics && userData.unlockedProfilePics) {
+    if (profilePics.length > 0 && userData && userData.unlockedProfilePics) {
       const profilePicsUnlocked = profilePics.filter((item) => (
-        now >= (item.startDate.seconds*1000) && now <= (item.endDate.seconds*1000)
+        now >= (new Date(item.startDate).getTime()) && now <= (new Date(item.endDate).getTime())
       )).filter((item) => (
         !userData.unlockedProfilePics.includes(item.id)
       ));
   
       setProfilePicsUnlocked(profilePicsUnlocked)
     }
-  }, [profilePics, userData])
+  }, [profilePics, userData, now])
 
 
   // Modal
@@ -46,21 +68,28 @@ function AccountHeader({user}) {
   const handleShow = () => setShow(true);
 
 
-  const ClaimUnlocks = () => {
-    const NewArray = userData.unlockedProfilePics
-    profilePicsUnlocked.map(pp => (
-      NewArray.push(pp.id)
-    ))
+  const ClaimUnlocks = async () => {
+    try {
+      const NewArray = [...(userData.unlockedProfilePics || [])];
+      profilePicsUnlocked.forEach(pp => {
+        if (!NewArray.includes(pp.id)) {
+          NewArray.push(pp.id);
+        }
+      });
 
-    firestore.collection('users').doc(user.uid).set({
-      unlockedProfilePics: NewArray
-    }, {merge: true}).then(data => (
-      console.log(data)
-    ))
+      await db.updateUser(user.id, {
+        unlockedProfilePics: NewArray
+      });
 
-    console.log(NewArray)
+      // Refresh user data
+      const updatedUserData = await db.getUser(user.id);
+      setUserData(updatedUserData);
 
-    handleClose()
+      console.log('Claimed unlocks:', NewArray);
+      handleClose();
+    } catch (error) {
+      console.error('Error claiming unlocks:', error);
+    }
   }
 
   return (

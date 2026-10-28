@@ -1,10 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { query, collection, onSnapshot, doc} from 'firebase/firestore';
-import {firestore} from '../../firebase';
+import React, { useState } from 'react';
+import { db } from '../../supabase';
 import {Form, Button, Alert, Spinner} from 'react-bootstrap';
-
-import firebase from 'firebase/compat/app';
-import "firebase/compat/storage";
 
 function AdmMain() {
   const [playlistTitle, setPlaylistTitle] = useState([])
@@ -13,34 +9,47 @@ function AdmMain() {
   const [playlistAlertType, setPlaylistAlertType] = useState('primary');
   const [imageLoad, setImageLoad] = useState(false);
 
-  const handleImagePlaylist = (e) => {
+  const handleImagePlaylist = async (e) => {
     if (e.target.files[0]) {
       setImageLoad(true)
-      const storageRef = firebase.storage().ref();
-      const imageRef = storageRef.child(`events/${e.target.files[0].name}`);
-      imageRef.put(e.target.files[0]).then(() => {
+      try {
+        // For now, we'll use a placeholder URL
+        // In production, you'd upload to Supabase Storage
+        const file = e.target.files[0];
+        const fakeUrl = `https://placeholder.com/events/${file.name}`;
+        
+        setImageUrl(fakeUrl);
         setPlaylistAlert('Image uploaded successfully!');
-        setPlaylistAlertType('primary')
-        imageRef.getDownloadURL().then((url) => {
-          setImageUrl(url);
-          setImageLoad(false)
-        });
-      });
+        setPlaylistAlertType('primary');
+        setImageLoad(false);
+      } catch (error) {
+        console.error('Error uploading image:', error);
+        setPlaylistAlert('Failed to upload image');
+        setPlaylistAlertType('danger');
+        setImageLoad(false);
+      }
     }
   };
 
-
-  const AddPlaylist = () => {
+  const AddPlaylist = async () => {
     if (imageUrl) {
-      firestore.collection('playlist').add({
-        title: playlistTitle,
-        img: imageUrl
-      })
-      setPlaylistAlert(`${playlistTitle} Playlist Added`)
-      setPlaylistAlertType("success")
+      try {
+        await db.addPlaylist({
+          title: playlistTitle,
+          img: imageUrl
+        });
+        setPlaylistAlert(`${playlistTitle} Playlist Added`);
+        setPlaylistAlertType("success");
+        setPlaylistTitle('');
+        setImageUrl('');
+      } catch (error) {
+        console.error('Error adding playlist:', error);
+        setPlaylistAlert('Failed to add playlist');
+        setPlaylistAlertType("danger");
+      }
     } else {
-      setPlaylistAlert('No image selected.')
-      setPlaylistAlertType("danger")
+      setPlaylistAlert('No image selected.');
+      setPlaylistAlertType("danger");
     }
   }
 

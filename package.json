@@ -6,12 +6,15 @@
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "@livekit/components-react": "^1.2.0",
     "@livekit/components-styles": "^1.0.6",
+    "@supabase/supabase-js": "^2.104.1",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
     "blur-image": "^0.1.2",
     "bootstrap": "^5.3.2",
-    "firebase": "^10.4.0",
+    "concurrently": "^7.6.0",
+    "cors": "^2.8.6",
+    "express": "^4.22.1",
     "get-best-contrast-color": "^0.3.1",
     "ldrs": "^1.0.1",
     "livekit-client": "^1.13.3",
@@ -21,7 +24,6 @@
     "react-bootstrap": "^2.9.0",
     "react-datepicker": "^6.1.0",
     "react-dom": "^18.2.0",
-    "react-firebase-hooks": "^5.1.1",
     "react-h5-audio-player": "^3.9.0",
     "react-icons": "^4.11.0",
     "react-live-clock": "^6.1.19",
@@ -30,7 +32,7 @@
     "react-range-slider-input": "^3.0.7",
     "react-rating-stars-component": "^2.2.0",
     "react-router-dom": "^6.18.0",
-    "react-scripts": "5.0.1",
+    "react-scripts": "^5.0.1",
     "react-select": "^5.8.0",
     "sass": "^1.68.0",
     "web-vitals": "^2.1.4"
@@ -39,7 +41,10 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "server": "node server.js",
+    "dev": "concurrently \"npm run server\" \"npm run start\"",
+    "install-deps": "npm install && npm install express cors"
   },
   "eslintConfig": {
     "extends": [

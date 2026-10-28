@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { query, collection, onSnapshot } from 'firebase/firestore';
-import {firestore} from '../../firebase';
+import { db, subscriptions } from '../../supabase';
 import {Table, Form} from 'react-bootstrap';
 import Select from 'react-select'
 
@@ -8,9 +7,16 @@ function ManageUsers() {
   const [users, setUsers] = useState([])
   
   useEffect (() => {
-    onSnapshot(query(collection(firestore, `/users`)), (snapshot) => {
-      setUsers(snapshot.docs.map(doc => ({...doc.data(), id: doc.id})))
-    });
+    const fetchUsers = async () => {
+      try {
+        const usersData = await db.getUsers();
+        setUsers(usersData);
+      } catch (error) {
+        console.error('Error fetching users:', error);
+      }
+    };
+
+    fetchUsers();
   }, [])
 
   const roleOptions = [
@@ -40,10 +46,12 @@ function ManageUsers() {
     roles.forEach(element => {
       roleValues.push(element.value)
     });
-    await firestore.collection('users').doc(userID).set({
-      roles: roleValues,
-    }, {merge: true})
-    console.log(roleValues)
+    try {
+      await db.updateUserRoles(userID, roleValues);
+      console.log(roleValues);
+    } catch (error) {
+      console.error('Error updating user roles:', error);
+    }
   }
 
   return (
@@ -65,8 +73,8 @@ function ManageUsers() {
               <td>
                 <Select
                   closeMenuOnSelect={false}
-                  defaultValue={user.roles&&(roleOptions.filter(
-                    option => user.roles.includes(option.value)
+                  defaultValue={user.user_roles&&(roleOptions.filter(
+                    option => user.user_roles.some(r => r.role === option.value)
                   ))}
                   isMulti
                   options={roleOptions}

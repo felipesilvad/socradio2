@@ -1,25 +1,25 @@
 import React, {useState,useEffect} from 'react';
-import {auth,firestore} from '../../firebase';
-import firebase from 'firebase/compat/app';
-import {query,collection,onSnapshot,where} from "firebase/firestore";
-import {Image,Modal,Button,Dropdown,Alert} from 'react-bootstrap';
+import {db} from '../../supabase';
+import {Image,Modal,Button,Dropdown} from 'react-bootstrap';
 
 function ChangePP({userID}) {
 
-  const [profilePics, setProfilePics] = useState('')
+  const [profilePics, setProfilePics] = useState([])
   const [selectedPic, setSelectedPic] = useState('Q82gC4OPteYZCJPP3ur2')
 
   useEffect (() => {
-    onSnapshot(query(collection(firestore, `/profile-pics`), where("lv", "==", 1)), (snapshot) => {
-      setProfilePics(snapshot.docs.map(doc => ({...doc.data(), id: doc.id})))
-    });
+    // Static profile pics for now - could be moved to a database table
+    const staticProfilePics = [
+      { id: 'Q82gC4OPteYZCJPP3ur2', url: 'some-url-1' },
+      { id: 'another-pic-id', url: 'some-url-2' }
+    ];
+    setProfilePics(staticProfilePics);
   }, [])
 
-  const selectImage = (id) => {
+  const selectImage = (id, url) => {
     setSelectedPic(id)
   }
 
-  const [loading, setLoading] = useState(false);
   const [done, setDone] = useState(false);
 
   // Modal
@@ -27,15 +27,15 @@ function ChangePP({userID}) {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
-  const usersRef = firestore.collection('users');
-
   const SavePP = async () => {
-    setLoading(true)
-    usersRef.doc(userID).set({
-      profilePic: selectedPic
-    }, {merge: true}).then(
-      setDone(true)
-    )
+    try {
+      await db.updateUser(userID, {
+        profilePic: selectedPic
+      });
+      setDone(true);
+    } catch (error) {
+      console.error('Error updating profile picture:', error);
+    }
   }
 
   function refreshPage(){ 

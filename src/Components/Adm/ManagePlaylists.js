@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { query, collection, onSnapshot, doc} from 'firebase/firestore';
-import {firestore} from '../../firebase';
+import { db, subscriptions } from '../../supabase';
 import {Table, Image, Button} from 'react-bootstrap';
 import Select from 'react-select'
 
@@ -8,9 +7,16 @@ function ManagePlaylists() {
   const [playlist, setPlaylist] = useState([])
 
   useEffect (() => {
-    onSnapshot(query(collection(firestore, `/playlist`)), (snapshot) => {
-      setPlaylist(snapshot.docs.map(doc => ({...doc.data(), id: doc.id})))
-    });
+    const fetchPlaylists = async () => {
+      try {
+        const playlistData = await db.getPlaylists();
+        setPlaylist(playlistData);
+      } catch (error) {
+        console.error('Error fetching playlists:', error);
+      }
+    };
+
+    fetchPlaylists();
   }, [])
 
   const customStyles = {
@@ -29,9 +35,9 @@ function ManagePlaylists() {
   }
 
   const updateRoles = (playlist, songID) => {
-    firestore.collection('songs').doc(songID).set({
-      playlists: playlist,
-    }, {merge: true})
+    db.updateSongPlaylists(songID, [playlist]).catch(error => {
+      console.error('Error updating song playlists:', error);
+    });
   }
 
   return (

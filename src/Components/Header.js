@@ -3,39 +3,61 @@ import SignIn from './Accounts/SignIn';
 import Navbar from 'react-bootstrap/Navbar';
 import {Container, OverlayTrigger, Tooltip} from 'react-bootstrap';
 import AccountHeader from './Accounts/AccountHeader';
-import {firestore} from '../firebase';
-import {query, collection, onSnapshot, doc, orderBy, where, getDoc} from 'firebase/firestore';
 import { TbCalendarTime } from "react-icons/tb";
 import { Link } from 'react-router-dom';
 import { FiGift } from "react-icons/fi";
 import HeaderStations from "./HeaderStations"
 import { FaCaretDown } from "react-icons/fa";
+import { createClient } from '@supabase/supabase-js';
+
+const supabaseUrl = 'https://your-supabase-url.supabase.co';
+const supabaseKey = 'your-supabase-key';
+const supabaseSecret = 'your-supabase-secret';
+const supabase = createClient(supabaseUrl, supabaseKey, supabaseSecret);
+
+const db = supabase;
 
 function Header({user}){
   const [upcomingPlaylists, setUpcomingPlaylists] = useState([])
   const [currentPlaylist, setCurrentPlaylist] = useState([])
   const [eventImg, setEventImg] = useState()
   const [eventTitle, setEventTitle] = useState()
-  const [currDate, setCurrDate] = useState(new Date())
-  // const [currTime, setCurrTime] = useState(new Date().toLocaleTimeString)
 
   const [userData, setUserData] = useState()
   useEffect(() => {
-    if (user) {
-      onSnapshot(doc(firestore, "/users/", user.uid), (doc) => {
-        setUserData(doc.data());
-      });
-    }
+    const fetchUserData = async () => {
+      try {
+        const data = await db.getUser(user.id);
+        setUserData(data);
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+      }
+    };
+
+    fetchUserData();
   }, [user]);
 
   useEffect (() => {
-    var first = new Date(currDate.getDate() - currDate.getDay());
-    onSnapshot(query(collection(firestore, 'eventCalendar'), where("startTime", ">=", first), orderBy("startTime")), (snapshot) => {
-      setUpcomingPlaylists(snapshot.docs.map(doc => ({...doc.data()})))
-    });
-  }, [])
+    const fetchEvents = async () => {
+      try {
+        const { data, error } = await db
+          .from('eventCalendar')
+          .select('*')
+          .order('startTime', { ascending: true });
+        if (error) {
+          console.error('Error fetching events:', error);
+        } else {
+          setUpcomingPlaylists(data);
+        }
+      } catch (error) {
+        console.error('Error fetching events:', error);
+      }
+    };
 
+    fetchEvents();
+  }, [upcomingPlaylists])
   useEffect (() => {
+    const currDate = new Date();
     if (upcomingPlaylists.length>0) {
       const nextPlaylist = upcomingPlaylists.filter(x => x.startTime.toDate() >= currDate)[0]
       setCurrentPlaylist(upcomingPlaylists[upcomingPlaylists.indexOf(nextPlaylist)-1])
@@ -44,18 +66,30 @@ function Header({user}){
   useEffect (() => {
     if (currentPlaylist) {
       if (currentPlaylist.playlist) {
-        const docRef = doc(firestore, "playlist", currentPlaylist.playlist);
-        getDoc(docRef).then(docSnap => {
-          if (docSnap.exists()) {
-            setEventImg(docSnap.data().img)
-            setEventTitle(docSnap.data().title)
-          } else {
-            console.log("No such document!");
+        const fetchPlaylist = async () => {
+          try {
+            const { data, error } = await db
+              .from('playlist')
+              .select('*')
+              .eq('id', currentPlaylist.playlist);
+            if (error) {
+              console.error('Error fetching playlist:', error);
+            } else {
+              const playlist = data[0];
+              if (playlist) {
+                setEventImg(playlist.img);
+                setEventTitle(playlist.title);
+              }
+            }
+          } catch (error) {
+            console.error('Error fetching playlist:', error);
           }
-        })
+        };
+
+        fetchPlaylist();
       }
     }
-  }, [currentPlaylist])
+  }, [currentPlaylist]);
 
   const tooltip = (text) => {
     return (

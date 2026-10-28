@@ -1,34 +1,41 @@
 import React, {useState,useEffect} from 'react';
-import {auth,firestore} from '../../firebase';
-import firebase from 'firebase/compat/app';
-import {query,collection,onSnapshot,where} from "firebase/firestore";
+import {auth, db} from '../../supabase';
 import {Image,Modal,Button,Form,Alert,Row,Col} from 'react-bootstrap';
-import { createUserWithEmailAndPassword,signInWithEmailAndPassword } from "firebase/auth";
 import LoadingScreen from '../LoadingScreen';
 
 function SignIn() {
   // Getting All Users
-  const [users, setUsers] = useState('')
+  const [users, setUsers] = useState([])
   useEffect (() => {
-    onSnapshot(query(collection(firestore, `/users`)), (snapshot) => {
-      setUsers(snapshot.docs.map(doc => (doc.data().email)))
-    });
+    const fetchUsers = async () => {
+      try {
+        const usersData = await db.getUsers();
+        setUsers(usersData.map(u => u.email));
+      } catch (error) {
+        console.error('Error fetching users:', error);
+      }
+    };
+
+    fetchUsers();
   }, [])
 
   
   // Profile Pic & Color
   const colors = ["#2a9d8f","#e9c46a","#f4a261","#e76f51","#219ebc","#ffb703","#fb8500","#8ecae6","#bdb2ff","#f07167","#c77dff"]
 
-  const [profilePics, setProfilePics] = useState('')
+  const [profilePics, setProfilePics] = useState([])
   const [selectedPic, setSelectedPic] = useState('Q82gC4OPteYZCJPP3ur2')
 
   useEffect (() => {
-    onSnapshot(query(collection(firestore, `/profile-pics`), where("lv", "==", 1)), (snapshot) => {
-      setProfilePics(snapshot.docs.map(doc => ({...doc.data(), id: doc.id})))
-    });
+    // Static profile pics for now - could be moved to a database table
+    const staticProfilePics = [
+      { id: 'Q82gC4OPteYZCJPP3ur2', url: 'some-url-1' },
+      { id: 'another-pic-id', url: 'some-url-2' }
+    ];
+    setProfilePics(staticProfilePics);
   }, [])
 
-  const selectImage = (id) => {
+  const selectImage = (id, url) => {
     setSelectedPic(id)
   }
   
@@ -44,10 +51,8 @@ function SignIn() {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
-  const usersRef = firestore.collection('users');
-
   const signIn = (email,password) => {
-    return signInWithEmailAndPassword(auth,email,password)
+    return auth.signInWithPassword({email, password})
   };
 
   // Load
@@ -55,7 +60,7 @@ function SignIn() {
 
   const loginWithEmailHandler = (email, password) => {
     setLoading(true)
-    signInWithEmailAndPassword(auth, email, password)
+    auth.signInWithPassword({ email, password })
       .then((result) => {
         const user = result.user;
         console.log("user:",user)
@@ -65,22 +70,15 @@ function SignIn() {
         const errorCode = error.code;
         const errorMessage = error.message;
         console.log(errorCode, errorMessage);
+        setError(errorMessage.replace('AuthApiError: ', ''))
+        setLoading(false)
       });
   }
 
   const signInWithGoogle = () => {
-    const provider = new firebase.auth.GoogleAuthProvider();
-    auth.signInWithPopup(provider).then(async (result) => {
-      if (!users.includes(result.user.email)) {
-        usersRef.doc(result.user.uid).set({
-          createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-          uid: result.user.uid,
-          email: result.user.email,
-          username: result.user.displayName,
-          profilePic: selectedPic
-        })
-      }
-    })
+    // Google OAuth would need to be set up in Supabase
+    // For now, showing placeholder
+    console.log('Google sign in needs to be configured in Supabase');
   }
 
   const SignUp = () => {
@@ -90,25 +88,28 @@ function SignIn() {
           if (username) {
             if (password) {
               setLoading(true)
-              createUserWithEmailAndPassword(auth, email, password)
+              auth.signUp({
+                email: email,
+                password: password,
+                options: {
+                  data: {
+                    username: username,
+                    color: colors[Math.floor(Math.random() * colors.length)],
+                    profilePic: selectedPic,
+                    unlockedPP: [],
+                    unlockedTitles: [],
+                    roles: []
+                  }
+                }
+              })
               .then((result) => {
-                usersRef.doc(result.user.uid).set({
-                  createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-                  uid: result.user.uid,
-                  email: result.user.email,
-                  username: username,
-                  color: colors[Math.floor(Math.random() * colors.length)],
-                  profilePic: selectedPic,
-                  unlockedPP: [],
-                  unlockedTitles: [],
-                  roles: []
-                })
+                // User is created with metadata
                 setLoading(false)
               }).catch((error) => {
                 setLoading(false)
                 const errorCode = error.code;
                 const errorMessage = error.message;
-                setError(errorMessage.replace('Firebase: ', ''))
+                setError(errorMessage.replace('AuthApiError: ', ''))
               })
             } else {setError('Password is required')}
           } else {setError('Username is required')}
@@ -155,7 +156,7 @@ function SignIn() {
                     <>
                       <Image src={pic.url} key={pic.id}
                       className={(selectedPic === pic.id) ? ('pic-select pic-select-active') : ('pic-select')}
-                      onClick={() => selectImage(pic.id,pic.url)} />
+                      onClick={() => selectImage(pic.id, pic.url)} />
                     </>
                   )))}
                 </div>

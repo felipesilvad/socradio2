@@ -1,17 +1,35 @@
 import React, {useRef, useState, useEffect} from 'react';
-import { doc, collection, onSnapshot } from "firebase/firestore";
-import {firestore} from '../../firebase';
+import { db, subscriptions } from '../../supabase';
 import ReactStars from "react-rating-stars-component";
 
 function AudioPlayerRatings({songID, updateRating}) {
   const [ratings, setRatings] = useState();
 
   useEffect(() => {
-    onSnapshot(collection(firestore, "/ratings/", songID, "/ratings/"), (snapshot) => {
-      if (snapshot.docs) {
-        setRatings(snapshot.docs.map(doc => ({...doc.data()})))
+    if (!songID) return;
+
+    // Fetch initial ratings
+    const fetchRatings = async () => {
+      try {
+        const ratingsData = await db.getSongRatings(songID);
+        setRatings(ratingsData);
+      } catch (error) {
+        console.error('Error fetching ratings:', error);
+      }
+    };
+
+    fetchRatings();
+
+    // Subscribe to rating changes
+    const ratingSubscription = subscriptions.subscribeToRatings(songID, (payload) => {
+      if (payload.eventType === 'INSERT' || payload.eventType === 'UPDATE' || payload.eventType === 'DELETE') {
+        fetchRatings();
       }
     });
+
+    return () => {
+      ratingSubscription.unsubscribe();
+    };
   }, [songID, updateRating])
 
   const getAvgRating = () => {

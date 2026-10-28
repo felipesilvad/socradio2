@@ -1,0 +1,19 @@
+{
+  "remove": [
+    "firebase",
+    "react-firebase-hooks"
+  ],
+  "add": [
+    "@supabase/supabase-js"
+  ],
+  "update_instructions": {
+    "commands": [
+      "npm uninstall firebase react-firebase-hooks",
+      "npm install @supabase/supabase-js"
+    ],
+    "environment_variables": {
+      "REACT_APP_SUPABASE_URL": "your_supabase_project_url",
+      "REACT_APP_SUPABASE_ANON_KEY": "your_supabase_anon_key"
+    }
+  }
+}
